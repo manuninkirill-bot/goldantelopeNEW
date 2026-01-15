@@ -459,33 +459,54 @@ def get_listings(category):
             filtered = [x for x in filtered if type_filter in (x.get('listing_type') or '')]
         
         def get_price_int(item):
+            # Сначала пробуем поле price
             price = item.get('price')
-            if price is None:
-                return 0
-            if isinstance(price, (int, float)):
-                return int(price)
-            # Извлекаем числа из строки (например, "6 000 000" или "6,5 млн")
-            try:
-                price_str = str(price).lower()
-                multiplier = 1
-                
-                # Check for million indicator
-                if 'млн' in price_str or 'mln' in price_str:
-                    multiplier = 1000000
-                
-                # Replace comma with dot for decimal parsing (6,5 -> 6.5)
-                price_str = price_str.replace(',', '.')
-                # Remove spaces and non-numeric chars except dot
-                price_str = re.sub(r'[^\d.]', '', price_str)
-                # Handle multiple dots - keep only first
-                parts = price_str.split('.')
-                if len(parts) > 2:
-                    price_str = parts[0] + '.' + ''.join(parts[1:])
-                
-                if price_str:
-                    return int(float(price_str) * multiplier)
-            except:
-                pass
+            if price is not None:
+                if isinstance(price, (int, float)) and price > 0:
+                    return int(price)
+                try:
+                    price_str = str(price).lower()
+                    multiplier = 1
+                    if 'млн' in price_str or 'mln' in price_str or 'миллион' in price_str:
+                        multiplier = 1000000
+                    price_str = price_str.replace(',', '.')
+                    price_str = re.sub(r'[^\d.]', '', price_str)
+                    parts = price_str.split('.')
+                    if len(parts) > 2:
+                        price_str = parts[0] + '.' + ''.join(parts[1:])
+                    if price_str:
+                        val = int(float(price_str) * multiplier)
+                        if val > 0:
+                            return val
+                except:
+                    pass
+            
+            # Если поле price пустое или 0, извлекаем из описания
+            desc = (item.get('description') or '').lower()
+            
+            # Ищем паттерны: "7,5 миллион", "7.5 млн", "Цена: 7 500 000"
+            import re
+            patterns = [
+                r'(\d+[,.]?\d*)\s*(?:миллион|млн|mln)',  # 7,5 миллион
+                r'цена[:\s]*(\d[\d\s]*)\s*(?:vnd|донг|₫)?',  # Цена: 7 500 000
+                r'(\d[\d\s]{2,})\s*(?:vnd|донг|₫)',  # 7 500 000 VND
+            ]
+            
+            for pattern in patterns:
+                match = re.search(pattern, desc)
+                if match:
+                    price_str = match.group(1).replace(' ', '').replace(',', '.')
+                    try:
+                        val = float(price_str)
+                        # Если число маленькое и паттерн с млн/миллион
+                        if val < 1000 and 'млн' in pattern or 'миллион' in pattern:
+                            val = val * 1000000
+                        elif val < 100:
+                            val = val * 1000000
+                        return int(val)
+                    except:
+                        pass
+            
             return 0
 
         # Price filtering
