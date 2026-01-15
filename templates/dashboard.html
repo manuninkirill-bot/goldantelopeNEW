@@ -1909,13 +1909,13 @@
                         <label style="display: block; margin-bottom: 4px; font-weight: 600; font-size: 13px; color: #333;">💰 Ценовая категория:</label>
                         <div style="display: flex; gap: 15px;">
                             <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                <input type="radio" name="edit-price-category" value="cheap"> 💵 Дёшево
+                                <input type="radio" name="edit-price-category" value="cheap"> 💵
                             </label>
                             <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                <input type="radio" name="edit-price-category" value="normal"> 💵💵 Нормально
+                                <input type="radio" name="edit-price-category" value="normal"> 💵💵
                             </label>
                             <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                <input type="radio" name="edit-price-category" value="expensive"> 💵💵💵 Дорого
+                                <input type="radio" name="edit-price-category" value="expensive"> 💵💵💵
                             </label>
                         </div>
                     </div>
@@ -2142,13 +2142,13 @@
                         <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">💰 Ценовая категория</label>
                         <div style="display: flex; gap: 20px;">
                             <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                <input type="radio" name="restaurant-price-category" value="cheap"> 💵 Дёшево
+                                <input type="radio" name="restaurant-price-category" value="cheap"> 💵
                             </label>
                             <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                <input type="radio" name="restaurant-price-category" value="normal" checked> 💵💵 Нормально
+                                <input type="radio" name="restaurant-price-category" value="normal" checked> 💵💵
                             </label>
                             <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                <input type="radio" name="restaurant-price-category" value="expensive"> 💵💵💵 Дорого
+                                <input type="radio" name="restaurant-price-category" value="expensive"> 💵💵💵
                             </label>
                         </div>
                     </div>
@@ -3231,9 +3231,9 @@
                             
                             // Ценовая категория
                             const priceCat = item.price_category || '';
-                            if (priceCat === 'cheap') priceCatBadge = '💵 Дёшево';
-                            else if (priceCat === 'normal') priceCatBadge = '💵💵 Нормально';
-                            else if (priceCat === 'expensive') priceCatBadge = '💵💵💵 Дорого';
+                            if (priceCat === 'cheap') priceCatBadge = '💵';
+                            else if (priceCat === 'normal') priceCatBadge = '💵💵';
+                            else if (priceCat === 'expensive') priceCatBadge = '💵💵💵';
                             
                             // Извлекаем рейтинг из описания если не задан
                             if (!item.google_rating) {
@@ -3269,7 +3269,7 @@
                                     }
                                     ${category === 'restaurants' && cuisineType ? `<span style="background:#795548;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">${cuisineType}</span>` : ''}
                                     ${category === 'restaurants' && item.city ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">📍 ${getCityRu(item.city)}</span>` : ''}
-                                    ${category === 'restaurants' && priceCatBadge ? `<span style="background:#d4af37;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">${priceCatBadge}</span>` : ''}
+                                    ${category === 'restaurants' && priceCatBadge ? `<span style="background:transparent;border:2px solid #d4af37;color:#d4af37;padding:5px 10px;border-radius:4px;font-size:16px;">${priceCatBadge}</span>` : ''}
                                     ${category === 'restaurants' && item.google_rating ? `<span style="background:#FFC107;color:#333;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">⭐ ${item.google_rating}</span>` : ''}
                                     ${category !== 'restaurants' && item.area ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">📐 ${item.area}m²</span>` : ''}
                                     ${category !== 'restaurants' && item.rooms ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🛏 ${item.rooms} комн.</span>` : ''}
