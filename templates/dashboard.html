@@ -2067,11 +2067,114 @@
 
         <!-- Медицина -->
         <div id="medicine" class="content">
-            <div class="filters">
-                <input type="text" placeholder="Поиск..." onchange="loadListings('medicine')">
+            <div id="vietnam-medicine-buttons" style="display: none; padding: 20px;">
+                <div class="tour-grid-container" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px;">
+                    <div class="tour-city-btn medicine-type-btn" data-type="questions" onclick="filterMedicineByType('questions')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #d4af37;">
+                        <img src="/static/images/medicine/questions.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
+                            <div class="city-name" style="font-weight: bold; font-size: 14px;">❓ Вопросы</div>
+                            <div class="tour-count" style="font-size: 12px; margin-top: 4px; color: #666;">0 объявлений</div>
+                        </div>
+                    </div>
+                    <div class="tour-city-btn medicine-type-btn" data-type="clinics" onclick="filterMedicineByType('clinics')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
+                        <img src="/static/images/medicine/clinics.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
+                            <div class="city-name" style="font-weight: bold; font-size: 14px;">🏥 Клиники</div>
+                            <div class="tour-count" style="font-size: 12px; margin-top: 4px; color: #666;">0 объявлений</div>
+                        </div>
+                    </div>
+                    <div class="tour-city-btn medicine-type-btn" data-type="directions" onclick="filterMedicineByType('directions')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
+                        <img src="/static/images/medicine/directions.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
+                            <div class="city-name" style="font-weight: bold; font-size: 14px;">🔬 Направления</div>
+                            <div class="tour-count" style="font-size: 12px; margin-top: 4px; color: #666;">0 объявлений</div>
+                        </div>
+                    </div>
+                    <div class="tour-city-btn medicine-type-btn" data-type="insurance" onclick="filterMedicineByType('insurance')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
+                        <img src="/static/images/medicine/insurance.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
+                            <div class="city-name" style="font-weight: bold; font-size: 14px;">🛡️ Страховка</div>
+                            <div class="tour-count" style="font-size: 12px; margin-top: 4px; color: #666;">0 объявлений</div>
+                        </div>
+                    </div>
+                    <div class="tour-city-btn submit-btn" onclick="switchTab('submit-medicine'); loadMedicineCaptcha();" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #4CAF50;">
+                        <img src="/static/images/submit_listing.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
+                            <div class="city-name" style="font-weight: bold; font-size: 16px;">📝 Подать</div>
+                            <div class="tour-count" style="font-size: 12px; margin-top: 4px; color: #4CAF50;">Добавить услугу</div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="listing-grid" id="medicine-grid">
                 <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>
+
+        <!-- Форма подачи медицины -->
+        <div id="submit-medicine" class="content" style="display: none;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="margin: 0 0 20px 0; color: #333; text-align: center;">🏥 Добавить медицинскую услугу</h2>
+                <form onsubmit="submitMedicine(event)">
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📋 Тип *</label>
+                        <select id="medicine-type" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                            <option value="questions">❓ Вопросы</option>
+                            <option value="clinics">🏥 Клиники</option>
+                            <option value="directions">🔬 Направления</option>
+                            <option value="insurance">🛡️ Страховка</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📝 Название *</label>
+                        <input type="text" id="medicine-title" required placeholder="Стоматология, анализы, консультация..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📄 Описание *</label>
+                        <textarea id="medicine-description" required rows="4" placeholder="Опишите услуги, специализацию, цены..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; resize: vertical; box-sizing: border-box;"></textarea>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📍 Город</label>
+                        <input type="text" id="medicine-city" placeholder="Хошимин, Нячанг, Дананг..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">💰 Цена (VND)</label>
+                        <input type="number" id="medicine-price" placeholder="500000" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📱 Telegram *</label>
+                        <input type="text" id="medicine-telegram" required placeholder="@username или t.me/..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📷 Фото (до 4 шт, макс 1 МБ каждое)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <input type="file" id="medicine-photo-0" accept="image/*" style="font-size: 12px;">
+                            <input type="file" id="medicine-photo-1" accept="image/*" style="font-size: 12px;">
+                            <input type="file" id="medicine-photo-2" accept="image/*" style="font-size: 12px;">
+                            <input type="file" id="medicine-photo-3" accept="image/*" style="font-size: 12px;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px; padding: 15px; background: #f5f5f5; border-radius: 6px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">🤖 Капча *</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span id="medicine-captcha-question" style="font-size: 18px; font-weight: bold; color: #333;">Загрузка...</span>
+                            <input type="text" id="medicine-captcha" required placeholder="Ответ" style="width: 100px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; text-align: center;">
+                            <button type="button" onclick="loadMedicineCaptcha()" style="padding: 10px; background: #eee; border: none; border-radius: 6px; cursor: pointer;">🔄</button>
+                        </div>
+                        <input type="hidden" id="medicine-captcha-answer">
+                    </div>
+
+                    <div id="medicine-submit-status" style="margin-bottom: 15px; font-size: 14px; display: none;"></div>
+
+                    <button type="submit" style="width: 100%; padding: 15px; background: #00BCD4; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 16px;">📤 Отправить на модерацию</button>
+                </form>
             </div>
         </div>
 
@@ -3041,6 +3144,12 @@
                 document.getElementById('vietnam-transport-buttons').style.display = isVietnam ? 'block' : 'none';
             if (document.getElementById('vietnam-restaurants-buttons'))
                 document.getElementById('vietnam-restaurants-buttons').style.display = isVietnam ? 'block' : 'none';
+            if (document.getElementById('vietnam-visas-buttons'))
+                document.getElementById('vietnam-visas-buttons').style.display = isVietnam ? 'block' : 'none';
+            if (document.getElementById('vietnam-news-buttons'))
+                document.getElementById('vietnam-news-buttons').style.display = isVietnam ? 'block' : 'none';
+            if (document.getElementById('vietnam-medicine-buttons'))
+                document.getElementById('vietnam-medicine-buttons').style.display = isVietnam ? 'block' : 'none';
             
             // Показываем динамические кнопки для других стран
             if (document.getElementById('other-restaurants-buttons'))
@@ -5723,6 +5832,82 @@
             }
             // Load listings filtered by city
             loadListings('news', city);
+        }
+
+        function loadMedicineCaptcha() {
+            fetch('/api/captcha')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('medicine-captcha-question').textContent = data.question;
+                    document.getElementById('medicine-captcha-answer').value = data.token;
+                });
+        }
+
+        async function submitMedicine(e) {
+            e.preventDefault();
+            const status = document.getElementById('medicine-submit-status');
+            status.style.display = 'block';
+            status.textContent = '⏳ Отправка...';
+            status.style.color = '#666';
+
+            const formData = new FormData();
+            formData.append('country', 'vietnam');
+            formData.append('category', 'medicine');
+            formData.append('medicine_type', document.getElementById('medicine-type').value);
+            formData.append('title', document.getElementById('medicine-title').value);
+            formData.append('description', document.getElementById('medicine-description').value);
+            formData.append('city', document.getElementById('medicine-city').value || '');
+            formData.append('price', document.getElementById('medicine-price').value || '');
+            formData.append('telegram', document.getElementById('medicine-telegram').value);
+            formData.append('captcha_answer', document.getElementById('medicine-captcha').value);
+            formData.append('captcha_token', document.getElementById('medicine-captcha-answer').value);
+
+            for (let i = 0; i < 4; i++) {
+                const file = document.getElementById(`medicine-photo-${i}`).files[0];
+                if (file) {
+                    if (file.size > 1024 * 1024) {
+                        status.textContent = '❌ Фото слишком большое (макс 1 МБ)';
+                        status.style.color = '#ff6b6b';
+                        return;
+                    }
+                    formData.append('photos', file);
+                }
+            }
+
+            try {
+                const response = await fetch('/api/submit-listing', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    status.textContent = '✅ ' + data.message;
+                    status.style.color = '#4CAF50';
+                    e.target.reset();
+                    loadMedicineCaptcha();
+                } else {
+                    status.textContent = '❌ ' + (data.error || 'Ошибка');
+                    status.style.color = '#ff6b6b';
+                    loadMedicineCaptcha();
+                }
+            } catch (err) {
+                status.textContent = '❌ Ошибка отправки';
+                status.style.color = '#ff6b6b';
+            }
+        }
+
+        function filterMedicineByType(type) {
+            // Highlight selected type
+            document.querySelectorAll('.medicine-type-btn').forEach(btn => {
+                btn.style.border = '3px solid transparent';
+            });
+            const selectedBtn = document.querySelector(`.medicine-type-btn[data-type="${type}"]`);
+            if (selectedBtn) {
+                selectedBtn.style.border = '3px solid #d4af37';
+            }
+            // Load listings filtered by type
+            loadListings('medicine', type);
         }
 
         async function submitVisas(e) {
