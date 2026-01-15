@@ -370,7 +370,13 @@ def get_listings(category):
     
     # Фильтры
     filters = request.args
-    filtered = listings
+    
+    # Фильтруем скрытые объявления (если не запрошено show_hidden=1)
+    show_hidden = request.args.get('show_hidden', '0') == '1'
+    if show_hidden:
+        filtered = listings  # Админ видит все
+    else:
+        filtered = [x for x in listings if not x.get('hidden', False)]
     
     # Маппинг русских названий городов на английские
     city_name_mapping = {
@@ -739,6 +745,68 @@ def admin_move():
     save_data(country, data)
     
     return jsonify({'success': True, 'message': f'Объявление перемещено в {to_category}'})
+
+@app.route('/api/admin/toggle-visibility', methods=['POST'])
+def admin_toggle_visibility():
+    """Скрыть/показать объявление"""
+    password = request.json.get('password', '')
+    admin_key = os.environ.get('ADMIN_KEY', '29Sept1982!')
+    
+    if password != admin_key:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    country = request.json.get('country', 'vietnam')
+    category = request.json.get('category')
+    listing_id = request.json.get('listing_id')
+    
+    data = load_data(country)
+    
+    if category not in data:
+        return jsonify({'error': 'Category not found'}), 404
+    
+    for item in data[category]:
+        if item.get('id') == listing_id:
+            current = item.get('hidden', False)
+            item['hidden'] = not current
+            save_data(country, data)
+            status = 'скрыто' if item['hidden'] else 'видимо'
+            return jsonify({'success': True, 'hidden': item['hidden'], 'message': f'Объявление {status}'})
+    
+    return jsonify({'error': 'Listing not found'}), 404
+
+@app.route('/api/admin/bulk-hide', methods=['POST'])
+def admin_bulk_hide():
+    """Массовое скрытие объявлений по контакту"""
+    password = request.json.get('password', '')
+    admin_key = os.environ.get('ADMIN_KEY', '29Sept1982!')
+    
+    if password != admin_key:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    country = request.json.get('country', 'vietnam')
+    category = request.json.get('category')
+    contact_name = request.json.get('contact_name')
+    hide = request.json.get('hide', True)
+    
+    data = load_data(country)
+    count = 0
+    
+    if category and category in data:
+        categories = [category]
+    else:
+        categories = data.keys()
+    
+    for cat in categories:
+        if cat in data:
+            for item in data[cat]:
+                cn = (item.get('contact_name') or item.get('contact') or '').lower()
+                if contact_name.lower() in cn:
+                    item['hidden'] = hide
+                    count += 1
+    
+    save_data(country, data)
+    action = 'скрыто' if hide else 'показано'
+    return jsonify({'success': True, 'count': count, 'message': f'{count} объявлений {action}'})
 
 @app.route('/api/admin/edit-listing', methods=['POST'])
 def admin_edit():

@@ -3104,6 +3104,11 @@
                 if (currentRealEstatePriceMax) params.append('price_max', currentRealEstatePriceMax);
             }
             
+            // В режиме админа показываем скрытые объявления
+            if (adminAuthenticated) {
+                params.append('show_hidden', '1');
+            }
+            
             const url = `/api/listings/${category}?` + params.toString() + '&_t=' + Date.now();
             console.log('Fetching:', url);
             
@@ -3419,10 +3424,12 @@
                                         ${tgLink ? `<a href="${tgLink}" target="_blank" class="btn tg-btn" style="flex: 1; min-width: 100px; display: inline-block; background: #0088cc; text-decoration: none; text-align: center; padding: 8px; border-radius: 6px; color: white; font-size: 12px; font-weight: 600;">✈️ Написать в Telegram</a>` : ''}
                                     </div>
                                     <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;" data-listing-id="${item.id}">
-                                        ${adminAuthenticated ? `<button onclick="openEditModal('${item.id}', '${category}')" style="flex: 1; min-width: 80px; padding: 6px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">✏️</button>` : ''}
-                                        ${adminAuthenticated ? `<button onclick="openMoveModal('${item.id}', '${category}')" style="flex: 1; min-width: 80px; padding: 6px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">↔️</button>` : ''}
-                                        ${adminAuthenticated ? `<button onclick="openDeleteModal('${item.id}', '${category}')" style="flex: 1; min-width: 80px; padding: 6px; background: #ff6b6b; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">🗑️</button>` : ''}
+                                        ${adminAuthenticated ? `<button onclick="openEditModal('${item.id}', '${category}')" style="flex: 1; min-width: 60px; padding: 6px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">✏️</button>` : ''}
+                                        ${adminAuthenticated ? `<button onclick="openMoveModal('${item.id}', '${category}')" style="flex: 1; min-width: 60px; padding: 6px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">↔️</button>` : ''}
+                                        ${adminAuthenticated ? `<button onclick="toggleVisibility('${item.id}', '${category}')" id="vis-btn-${item.id}" style="flex: 1; min-width: 60px; padding: 6px; background: ${item.hidden ? '#ff9800' : '#9e9e9e'}; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">${item.hidden ? '👁️' : '🙈'}</button>` : ''}
+                                        ${adminAuthenticated ? `<button onclick="openDeleteModal('${item.id}', '${category}')" style="flex: 1; min-width: 60px; padding: 6px; background: #ff6b6b; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">🗑️</button>` : ''}
                                     </div>
+                                    ${adminAuthenticated && item.hidden ? `<div style="background: #ff9800; color: white; padding: 4px 8px; border-radius: 4px; text-align: center; margin-top: 6px; font-size: 11px; font-weight: 600;">🙈 СКРЫТО</div>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -3481,6 +3488,49 @@
         const adminStatus = document.getElementById('admin-status');
         const adminTools = document.getElementById('admin-tools');
 
+        async function toggleVisibility(listingId, category) {
+            console.log('Toggling visibility for:', listingId, 'from:', category);
+            try {
+                const response = await fetch('/api/admin/toggle-visibility', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        password: adminPassword.value,
+                        country: currentCountry,
+                        category: category,
+                        listing_id: listingId
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const btn = document.getElementById('vis-btn-' + listingId);
+                    if (btn) {
+                        btn.style.background = data.hidden ? '#ff9800' : '#9e9e9e';
+                        btn.textContent = data.hidden ? '👁️' : '🙈';
+                    }
+                    const card = btn ? btn.closest('.card') : null;
+                    if (card) {
+                        let hiddenBadge = card.querySelector('.hidden-badge');
+                        if (data.hidden && !hiddenBadge) {
+                            const badge = document.createElement('div');
+                            badge.className = 'hidden-badge';
+                            badge.style.cssText = 'background: #ff9800; color: white; padding: 4px 8px; border-radius: 4px; text-align: center; margin-top: 6px; font-size: 11px; font-weight: 600;';
+                            badge.textContent = '🙈 СКРЫТО';
+                            card.querySelector('.card-body').appendChild(badge);
+                        } else if (!data.hidden && hiddenBadge) {
+                            hiddenBadge.remove();
+                        }
+                    }
+                    console.log(data.message);
+                } else {
+                    alert('Ошибка: ' + data.error);
+                }
+            } catch (err) {
+                console.error('Error toggling visibility:', err);
+                alert('Ошибка при изменении видимости');
+            }
+        }
+        
         function openDeleteModal(listingId, category) {
             console.log('Opening delete modal for:', listingId, 'from:', category);
             document.getElementById('delete-modal-id').textContent = 'ID: ' + listingId;
