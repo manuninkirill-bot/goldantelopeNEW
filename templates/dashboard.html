@@ -3696,12 +3696,7 @@
                 const container = document.getElementById(`${section}-city-grid`);
                 if (!container) return;
                 
-                const sectionImageKey = section === 'food' ? 'restaurants' : 
-                                        section === 'tours' ? 'tours' : 
-                                        section === 'fun' ? 'entertainment' : 
-                                        section === 'bikes' ? 'transport' : 
-                                        section === 'realestate' ? 'realestate' : 'tours';
-                const sectionImages = sectionCityImages[sectionImageKey] || sectionCityImages.tours;
+                const sectionImages = sectionCityImages[section] || sectionCityImages.tours;
                 
                 let html = '';
                 cities.forEach((city, idx) => {
