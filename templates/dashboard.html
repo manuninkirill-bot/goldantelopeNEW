@@ -3369,9 +3369,19 @@
                                         ? (item.price ? `<div style="background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; text-align: center;">
                                             <span style="font-size: 18px; font-weight: bold;">💰 ${Number(item.price).toLocaleString('vi-VN')} VND</span>
                                         </div>` : '')
-                                        : (displayPrice ? `<div style="background: linear-gradient(135deg, #d4af37, #f4d03f); color: #000; padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; text-align: center;">
-                                            <span style="font-size: 18px; font-weight: bold;">💰 ${displayPrice}</span>
-                                        </div>` : '')
+                                        : (category === 'tours' 
+                                            ? (item.price ? `<div style="background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; text-align: center;">
+                                                <span style="font-size: 18px; font-weight: bold;">💰 $${item.price}</span>
+                                            </div>` : '')
+                                            : (category === 'real_estate' || category === 'realestate'
+                                                ? (displayPrice ? `<div style="background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; text-align: center;">
+                                                    <span style="font-size: 18px; font-weight: bold;">💰 ${displayPrice}</span>
+                                                </div>` : '')
+                                                : (displayPrice ? `<div style="background: linear-gradient(135deg, #d4af37, #f4d03f); color: #000; padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; text-align: center;">
+                                                    <span style="font-size: 18px; font-weight: bold;">💰 ${displayPrice}</span>
+                                                </div>` : '')
+                                            )
+                                        )
                                     }
                                     <!-- WhatsApp и Telegram кнопки -->
                                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
