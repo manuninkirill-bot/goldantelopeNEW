@@ -1711,13 +1711,51 @@
 
         <!-- Чат -->
         <div id="chat" class="content">
-            <div style="max-width: 800px; margin: 0 auto;">
-                <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #dee2e6;">
-                    <h3 style="margin: 0 0 5px 0; color: #333; font-size: 16px;">💬 Лента сообщений</h3>
-                    <p style="margin: 0; color: #666; font-size: 12px;">Все сообщения из чатов сообщества</p>
+            <div style="max-width: 900px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 20px; margin-bottom: 15px; color: white;">
+                    <h3 style="margin: 0 0 8px 0; font-size: 20px;">💬 Чат сообщества GoldAntelope</h3>
+                    <p style="margin: 0; opacity: 0.9; font-size: 13px;">Общайтесь с русскоязычным сообществом Азии. Авторизация через Telegram.</p>
                 </div>
-                <div id="chat-feed" style="max-height: 600px; overflow-y: auto;">
-                    <div class="loading"><div class="spinner"></div></div>
+                
+                <!-- Форма авторизации -->
+                <div id="chat-auth-form" style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; border: 1px solid #ddd;">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">🔐</div>
+                        <h4 style="margin: 0 0 5px 0; color: #333;">Вход в чат</h4>
+                        <p style="margin: 0; color: #666; font-size: 13px;">Введите ваш Telegram ID (числовой) для получения кода</p>
+                    </div>
+                    <div style="max-width: 350px; margin: 0 auto;">
+                        <div style="margin-bottom: 12px;">
+                            <input type="text" id="chat-telegram-id" placeholder="Ваш Telegram ID (например: 123456789)" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                            <div style="font-size: 11px; color: #888; margin-top: 5px;">Узнать ID: напишите @userinfobot в Telegram</div>
+                        </div>
+                        <button onclick="requestChatCode()" style="width: 100%; padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">📩 Получить код</button>
+                        <div id="chat-code-form" style="display: none; margin-top: 15px;">
+                            <input type="text" id="chat-verify-code" placeholder="Введите 6-значный код" style="width: 100%; padding: 12px; border: 2px solid #667eea; border-radius: 8px; font-size: 16px; text-align: center; letter-spacing: 3px; box-sizing: border-box; margin-bottom: 10px;">
+                            <button onclick="verifyChatCode()" style="width: 100%; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">✅ Войти</button>
+                        </div>
+                        <div id="chat-auth-status" style="margin-top: 10px; text-align: center; font-size: 13px;"></div>
+                    </div>
+                </div>
+                
+                <!-- Интерфейс чата (скрыт до авторизации) -->
+                <div id="chat-interface" style="display: none;">
+                    <div style="background: white; border-radius: 12px; border: 1px solid #ddd; overflow: hidden;">
+                        <div style="background: #f8f9fa; padding: 12px 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="color: #333; font-weight: 600;">👤 </span>
+                                <span id="chat-username" style="color: #667eea; font-weight: 600;"></span>
+                            </div>
+                            <button onclick="logoutChat()" style="padding: 6px 12px; background: #dc3545; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">Выйти</button>
+                        </div>
+                        <div id="chat-messages" style="height: 500px; overflow-y: auto; padding: 15px; background: #fafafa;">
+                            <div class="loading"><div class="spinner"></div></div>
+                        </div>
+                        <div style="padding: 12px; border-top: 1px solid #eee; background: white; display: flex; gap: 10px;">
+                            <input type="text" id="chat-message-input" placeholder="Введите сообщение..." style="flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px;" onkeypress="if(event.key==='Enter')sendChatMessage()">
+                            <button onclick="sendChatMessage()" style="padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">📤 Отправить</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2453,6 +2491,18 @@
                         <div id="banner-upload-status" style="font-size: 12px; margin-top: 8px;"></div>
                     </div>
 
+                    <div style="background: #ffebee; padding: 20px; border-radius: 8px; border: 1px solid #ef9a9a; margin-top: 20px;">
+                        <h4 style="margin: 0 0 15px 0; color: #c62828;">🚫 Чёрный список чата</h4>
+                        <p style="font-size: 12px; color: #666; margin: 0 0 15px 0;">Заблокированные пользователи не могут писать в чат сообщества</p>
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <input type="text" id="blacklist-username" placeholder="Telegram ID пользователя" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;">
+                            <button onclick="addToBlacklist()" style="padding: 10px 20px; background: #c62828; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Заблокировать</button>
+                        </div>
+                        <div id="blacklist-list" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            <span style="color: #999; font-size: 12px;">Загрузка...</span>
+                        </div>
+                    </div>
+
                     <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; border: 1px solid #90caf9; margin-top: 20px;">
                         <h4 style="margin: 0 0 15px 0; color: #1565c0;">📡 Управление Telegram каналами</h4>
                         <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
@@ -2749,56 +2799,230 @@
             }
         }
         
+        let chatToken = localStorage.getItem('chat_token');
+        let chatUsername = localStorage.getItem('chat_username');
+        
         function loadChatFeed() {
-            const feed = document.getElementById('chat-feed');
-            if (!feed) return;
+            if (chatToken && chatUsername) {
+                document.getElementById('chat-auth-form').style.display = 'none';
+                document.getElementById('chat-interface').style.display = 'block';
+                document.getElementById('chat-username').textContent = chatUsername;
+                loadChatMessages();
+            } else {
+                document.getElementById('chat-auth-form').style.display = 'block';
+                document.getElementById('chat-interface').style.display = 'none';
+            }
             
-            feed.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-            
-            fetch(`/api/listings/chat?country=${currentCountry}`)
-                .then(r => r.json())
-                .then(messages => {
-                    if (!messages || messages.length === 0) {
-                        feed.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">Нет сообщений</div>';
-                        return;
-                    }
-                    
-                    // Sort by date descending
-                    messages.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    
-                    feed.innerHTML = messages.map(msg => {
-                        const date = new Date(msg.date);
-                        const timeStr = date.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-                        const channel = msg.source_channel || '';
-                        const text = msg.description || msg.title || '';
-                        const hasImage = msg.image_url;
-                        const telegramLink = msg.telegram_link || (channel && msg.message_id ? `https://t.me/${channel.replace('@', '')}/${msg.message_id}` : '');
-                        
-                        return `
-                            <div style="background: white; border-radius: 10px; padding: 15px; margin-bottom: 12px; border: 1px solid #e0e0e0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                    <span style="font-weight: 600; color: #0088cc; font-size: 13px;">${channel}</span>
-                                    <span style="color: #999; font-size: 11px;">${timeStr}</span>
-                                </div>
-                                ${hasImage ? `<img src="${msg.image_url}" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;" onerror="this.style.display='none'">` : ''}
-                                <div style="color: #333; font-size: 14px; line-height: 1.5; white-space: pre-wrap;">${text.substring(0, 500)}${text.length > 500 ? '...' : ''}</div>
-                                ${telegramLink ? `<a href="${telegramLink}" target="_blank" style="display: inline-block; margin-top: 10px; color: #0088cc; font-size: 12px; text-decoration: none;">✈️ Открыть в Telegram</a>` : ''}
-                            </div>
-                        `;
-                    }).join('');
-                })
-                .catch(err => {
-                    feed.innerHTML = '<div style="text-align: center; padding: 40px; color: #f44;">Ошибка загрузки</div>';
-                });
-            
-            // Автоматическое обновление чатов каждую минуту
             if (!window.chatRefreshInterval) {
                 window.chatRefreshInterval = setInterval(() => {
-                    if (document.getElementById('chat').classList.contains('active')) {
-                        loadChatFeed();
+                    if (document.getElementById('chat').classList.contains('active') && chatToken) {
+                        loadChatMessages();
                     }
-                }, 60000);
+                }, 5000);
             }
+        }
+        
+        async function requestChatCode() {
+            const telegramId = document.getElementById('chat-telegram-id').value.trim();
+            const status = document.getElementById('chat-auth-status');
+            if (!telegramId) {
+                status.innerHTML = '<span style="color: #dc3545;">Введите ваш Telegram ID</span>';
+                return;
+            }
+            status.innerHTML = '<span style="color: #667eea;">Отправляем код...</span>';
+            try {
+                const r = await fetch('/api/chat/request-code', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({telegram_id: telegramId})
+                });
+                const data = await r.json();
+                if (data.success) {
+                    status.innerHTML = '<span style="color: #4CAF50;">Код отправлен! Проверьте Telegram</span>';
+                    document.getElementById('chat-code-form').style.display = 'block';
+                } else {
+                    status.innerHTML = `<span style="color: #dc3545;">${data.error}</span>`;
+                }
+            } catch(e) {
+                status.innerHTML = '<span style="color: #dc3545;">Ошибка сети</span>';
+            }
+        }
+        
+        async function verifyChatCode() {
+            const telegramId = document.getElementById('chat-telegram-id').value.trim();
+            const code = document.getElementById('chat-verify-code').value.trim();
+            const status = document.getElementById('chat-auth-status');
+            if (!code) {
+                status.innerHTML = '<span style="color: #dc3545;">Введите код</span>';
+                return;
+            }
+            try {
+                const r = await fetch('/api/chat/verify-code', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({telegram_id: telegramId, code: code})
+                });
+                const data = await r.json();
+                if (data.success) {
+                    chatToken = data.token;
+                    chatUsername = data.username;
+                    localStorage.setItem('chat_token', chatToken);
+                    localStorage.setItem('chat_username', chatUsername);
+                    loadChatFeed();
+                } else {
+                    status.innerHTML = `<span style="color: #dc3545;">${data.error}</span>`;
+                }
+            } catch(e) {
+                status.innerHTML = '<span style="color: #dc3545;">Ошибка сети</span>';
+            }
+        }
+        
+        function logoutChat() {
+            chatToken = null;
+            chatUsername = null;
+            localStorage.removeItem('chat_token');
+            localStorage.removeItem('chat_username');
+            document.getElementById('chat-code-form').style.display = 'none';
+            document.getElementById('chat-verify-code').value = '';
+            document.getElementById('chat-auth-status').innerHTML = '';
+            loadChatFeed();
+        }
+        
+        async function loadChatMessages() {
+            const container = document.getElementById('chat-messages');
+            if (!container) return;
+            try {
+                const r = await fetch('/api/chat/messages');
+                const data = await r.json();
+                const messages = data.messages || [];
+                if (messages.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">Пока нет сообщений. Будьте первым!</div>';
+                    return;
+                }
+                const isAdmin = adminAuthenticated;
+                container.innerHTML = messages.map(msg => {
+                    const date = new Date(msg.timestamp);
+                    const timeStr = date.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+                    const isMe = msg.username === chatUsername;
+                    const deleteBtn = isAdmin ? `<button onclick="deleteChatMessage('${msg.id}')" style="background: #dc3545; color: white; border: none; padding: 2px 6px; border-radius: 4px; font-size: 10px; cursor: pointer; margin-left: 5px;">🗑️</button>` : '';
+                    const blockBtn = isAdmin && !isMe ? `<button onclick="blockChatUser('${msg.username}')" style="background: #ff9800; color: white; border: none; padding: 2px 6px; border-radius: 4px; font-size: 10px; cursor: pointer; margin-left: 3px;">🚫</button>` : '';
+                    return `
+                        <div style="background: ${isMe ? '#e3f2fd' : 'white'}; border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1px solid ${isMe ? '#90caf9' : '#e0e0e0'};">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <span style="font-weight: 600; color: #667eea; font-size: 13px;">@${msg.username}${deleteBtn}${blockBtn}</span>
+                                <span style="color: #999; font-size: 11px;">${timeStr}</span>
+                            </div>
+                            <div style="color: #333; font-size: 14px; line-height: 1.5; white-space: pre-wrap;">${msg.message}</div>
+                        </div>
+                    `;
+                }).join('');
+                container.scrollTop = container.scrollHeight;
+            } catch(e) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #f44;">Ошибка загрузки</div>';
+            }
+        }
+        
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-message-input');
+            const message = input.value.trim();
+            if (!message || !chatToken) return;
+            input.value = '';
+            try {
+                const r = await fetch('/api/chat/send', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({token: chatToken, message: message})
+                });
+                const data = await r.json();
+                if (!data.success) {
+                    alert(data.error || 'Ошибка отправки');
+                    input.value = message;
+                } else {
+                    loadChatMessages();
+                }
+            } catch(e) {
+                alert('Ошибка сети');
+                input.value = message;
+            }
+        }
+        
+        async function deleteChatMessage(msgId) {
+            if (!confirm('Удалить это сообщение?')) return;
+            try {
+                await fetch('/api/admin/chat-delete', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({admin_key: adminPassword, message_id: msgId})
+                });
+                loadChatMessages();
+            } catch(e) {}
+        }
+        
+        async function blockChatUser(username) {
+            if (!confirm(`Заблокировать @${username}?`)) return;
+            try {
+                await fetch('/api/admin/chat-blacklist', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({admin_key: adminPassword, action: 'add', username: username})
+                });
+                alert(`@${username} заблокирован`);
+                loadChatMessages();
+                loadBlacklist();
+            } catch(e) {}
+        }
+        
+        async function loadBlacklist() {
+            const list = document.getElementById('blacklist-list');
+            if (!list || !adminPassword) return;
+            try {
+                const r = await fetch('/api/admin/chat-blacklist', {
+                    method: 'GET',
+                    headers: {'X-Admin-Key': adminPassword}
+                });
+                const data = await r.json();
+                const users = data.users || [];
+                if (users.length === 0) {
+                    list.innerHTML = '<span style="color: #999; font-size: 12px;">Список пуст</span>';
+                    return;
+                }
+                list.innerHTML = users.map(u => `
+                    <div style="display: flex; align-items: center; gap: 5px; background: #fff; border: 1px solid #ef9a9a; border-radius: 20px; padding: 5px 10px;">
+                        <span style="font-size: 13px;">@${u}</span>
+                        <button onclick="removeFromBlacklist('${u}')" style="background: none; border: none; cursor: pointer; font-size: 12px; color: #c62828;">✕</button>
+                    </div>
+                `).join('');
+            } catch(e) {
+                list.innerHTML = '<span style="color: #c62828; font-size: 12px;">Ошибка загрузки</span>';
+            }
+        }
+        
+        async function addToBlacklist() {
+            const input = document.getElementById('blacklist-username');
+            const username = input.value.trim();
+            if (!username) return;
+            try {
+                await fetch('/api/admin/chat-blacklist', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({admin_key: adminPassword, action: 'add', username: username})
+                });
+                input.value = '';
+                loadBlacklist();
+            } catch(e) {
+                alert('Ошибка');
+            }
+        }
+        
+        async function removeFromBlacklist(username) {
+            try {
+                await fetch('/api/admin/chat-blacklist', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({admin_key: adminPassword, action: 'remove', username: username})
+                });
+                loadBlacklist();
+            } catch(e) {}
         }
 
         function loadKidsFeed() {
@@ -4859,6 +5083,7 @@
                     document.querySelector('button[onclick="adminAuth()"]').disabled = true;
                     renderAdminBanners();
                     loadChannelsAdmin();
+                    loadBlacklist();
                     // Перезагрузить текущую категорию чтобы показать кнопки перемещения
                     const currentTab = document.querySelector('.tab.active');
                     if (currentTab) {
