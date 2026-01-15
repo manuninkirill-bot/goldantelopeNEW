@@ -1508,7 +1508,7 @@
                     </div>
                 </div>
             </div>
-            <div class="filters" style="display: flex; gap: 10px; padding: 15px; flex-wrap: wrap;">
+            <div id="vietnam-realestate-filters" class="filters" style="display: flex; gap: 10px; padding: 15px; flex-wrap: wrap;">
                 <button onclick="filterRealEstateType('rent')" class="filter-type-btn" id="filter-rent" style="padding: 10px 20px; background: #fff; border: 2px solid #2196F3; border-radius: 8px; cursor: pointer; font-weight: 600; color: #333;">🔑 Аренда</button>
                 <button onclick="filterRealEstateType('sale')" class="filter-type-btn" id="filter-sale" style="padding: 10px 20px; background: #fff; border: 2px solid #4CAF50; border-radius: 8px; cursor: pointer; font-weight: 600; color: #333;">🏠 Продажа</button>
                 <span style="border-left: 2px solid #ddd; margin: 0 5px;"></span>
@@ -2963,6 +2963,8 @@
                 document.getElementById('other-transport-buttons').style.display = isVietnam ? 'none' : 'block';
             if (document.getElementById('other-realestate-buttons'))
                 document.getElementById('other-realestate-buttons').style.display = isVietnam ? 'none' : 'block';
+            if (document.getElementById('vietnam-realestate-filters'))
+                document.getElementById('vietnam-realestate-filters').style.display = isVietnam ? 'flex' : 'none';
             
             // Генерируем динамические города для других стран
             if (!isVietnam) {
