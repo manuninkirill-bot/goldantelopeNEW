@@ -3358,6 +3358,24 @@
                                         <span style="font-size: 18px; font-weight: bold;">💰 ${displayPrice}</span>
                                     </div>` : ''}
                                     <!-- WhatsApp и Telegram кнопки -->
+                                    ${category === 'restaurants' ? `
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                                        ${item.whatsapp ? `<a href="https://api.whatsapp.com/send/?phone=${item.whatsapp}&text&type=phone_number&app_absent=0" target="_blank" style="display: block; background: transparent; border: 2px solid #25D366; color: #25D366; padding: 10px; border-radius: 6px; text-align: center; text-decoration: none; font-weight: 600;">
+                                            💬 WhatsApp
+                                        </a>` : `<div style="display: block; background: transparent; border: 2px solid #ccc; color: #999; padding: 10px; border-radius: 6px; text-align: center; font-weight: 600;">
+                                            💬 WhatsApp
+                                        </div>`}
+                                        ${item.telegram ? `<a href="https://t.me/${item.telegram.replace('@', '')}" target="_blank" style="display: block; background: transparent; border: 2px solid #0088cc; color: #0088cc; padding: 10px; border-radius: 6px; text-align: center; text-decoration: none; font-weight: 600;">
+                                            ✈️ Telegram
+                                        </a>` : `<div style="display: block; background: transparent; border: 2px solid #ccc; color: #999; padding: 10px; border-radius: 6px; text-align: center; font-weight: 600;">
+                                            ✈️ Telegram
+                                        </div>`}
+                                    </div>
+                                    <!-- Google Maps кнопка для ресторанов -->
+                                    <a href="https://www.google.com/maps/search/${encodeURIComponent((item.title || item.name || '') + ' ' + (item.location || item.city || 'Vietnam'))}" target="_blank" style="display: block; background: transparent; border: 2px solid #4285F4; color: #4285F4; padding: 10px; border-radius: 6px; text-align: center; text-decoration: none; font-weight: 600; margin-bottom: 10px;">
+                                        📍 Открыть в Google Maps
+                                    </a>
+                                    ` : `
                                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
                                         ${item.whatsapp ? `<a href="https://api.whatsapp.com/send/?phone=${item.whatsapp}&text&type=phone_number&app_absent=0" target="_blank" style="display: block; background: #25D366; color: white; padding: 10px; border-radius: 6px; text-align: center; text-decoration: none; font-weight: 600;">
                                             💬 WhatsApp
@@ -3370,12 +3388,7 @@
                                             ✈️ Telegram
                                         </div>`}
                                     </div>
-                                    ${category === 'restaurants' ? `
-                                    <!-- Google Maps кнопка для ресторанов -->
-                                    <a href="https://www.google.com/maps/search/${encodeURIComponent((item.title || item.name || '') + ' ' + (item.location || item.city || 'Vietnam'))}" target="_blank" style="display: block; background: #4285F4; color: white; padding: 10px; border-radius: 6px; text-align: center; text-decoration: none; font-weight: 600; margin-bottom: 10px;">
-                                        📍 Открыть в Google Maps
-                                    </a>
-                                    ` : ''}
+                                    `}
                                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                                         ${item.external_link ? `<a href="${item.external_link}" target="_blank" style="flex: 1; min-width: 100px; display: inline-block; background: #d4af37; text-decoration: none; text-align: center; padding: 8px; border-radius: 6px; color: white; font-size: 12px; font-weight: 600;">🔗 Оригинал</a>` : ''}
                                         ${tgLink ? `<a href="${tgLink}" target="_blank" class="btn tg-btn" style="flex: 1; min-width: 100px; display: inline-block; background: #0088cc; text-decoration: none; text-align: center; padding: 8px; border-radius: 6px; color: white; font-size: 12px; font-weight: 600;">✈️ Написать в Telegram</a>` : ''}
