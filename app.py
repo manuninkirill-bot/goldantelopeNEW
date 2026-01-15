@@ -1738,7 +1738,7 @@ def manual_parse():
 
 # ============ TELEGRAM КАНАЛ ДЛЯ ФОТО ============
 
-TELEGRAM_PHOTO_CHANNEL = '7373419661'
+TELEGRAM_PHOTO_CHANNEL = '-1003577636318'
 
 def send_photo_to_channel(image_data, caption=''):
     """Отправить фото в Telegram канал и получить file_id"""
