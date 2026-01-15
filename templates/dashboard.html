@@ -901,6 +901,21 @@
             
             <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px;">
                 <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">📋 Доступные группы для рекламы</h3>
+                
+                <!-- Фильтр по городам -->
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
+                    <button class="ads-city-btn" data-city="" onclick="filterAdsByCity('')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #667eea; color: white; cursor: pointer; font-size: 13px; font-weight: 500;">Все города</button>
+                    <button class="ads-city-btn" data-city="Нячанг" onclick="filterAdsByCity('Нячанг')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Нячанг</button>
+                    <button class="ads-city-btn" data-city="Хошимин" onclick="filterAdsByCity('Хошимин')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Хошимин</button>
+                    <button class="ads-city-btn" data-city="Дананг" onclick="filterAdsByCity('Дананг')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Дананг</button>
+                    <button class="ads-city-btn" data-city="Ханой" onclick="filterAdsByCity('Ханой')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Ханой</button>
+                    <button class="ads-city-btn" data-city="Бангкок" onclick="filterAdsByCity('Бангкок')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Бангкок</button>
+                    <button class="ads-city-btn" data-city="Паттайя" onclick="filterAdsByCity('Паттайя')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Паттайя</button>
+                    <button class="ads-city-btn" data-city="Пхукет" onclick="filterAdsByCity('Пхукет')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Пхукет</button>
+                    <button class="ads-city-btn" data-city="Бали" onclick="filterAdsByCity('Бали')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Бали</button>
+                    <button class="ads-city-btn" data-city="Гоа" onclick="filterAdsByCity('Гоа')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Гоа</button>
+                </div>
+                
                 <div style="overflow-x: auto;">
                     <table id="ads-table" style="width: 100%; border-collapse: collapse; font-size: 14px;">
                         <thead>
@@ -923,12 +938,12 @@
                 <p style="color: #666; margin-bottom: 15px; font-size: 13px;">У вас есть Telegram канал? Добавьте его в наш каталог и получайте заказы на рекламу!</p>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
                     <div>
-                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Название канала</label>
-                        <input type="text" id="add-channel-name" placeholder="@your_channel" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Название канала *</label>
+                        <input type="text" id="add-channel-name" placeholder="@your_channel" required style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
                     </div>
                     <div>
-                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Категория</label>
-                        <select id="add-channel-category" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Категория *</label>
+                        <select id="add-channel-category" required style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
                             <option value="chat">💬 Чат</option>
                             <option value="visas">🏖️ Визы</option>
                             <option value="realestate">🏠 Недвижимость</option>
@@ -943,18 +958,38 @@
                         </select>
                     </div>
                     <div>
-                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Подписчиков</label>
-                        <input type="number" id="add-channel-members" placeholder="1000" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Город *</label>
+                        <select id="add-channel-city" required style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                            <option value="Нячанг">Нячанг</option>
+                            <option value="Хошимин">Хошимин</option>
+                            <option value="Дананг">Дананг</option>
+                            <option value="Ханой">Ханой</option>
+                            <option value="Фукуок">Фукуок</option>
+                            <option value="Фантьет">Фантьет</option>
+                            <option value="Муйне">Муйне</option>
+                            <option value="Далат">Далат</option>
+                            <option value="Бангкок">Бангкок</option>
+                            <option value="Паттайя">Паттайя</option>
+                            <option value="Пхукет">Пхукет</option>
+                            <option value="Бали">Бали</option>
+                            <option value="Гоа">Гоа</option>
+                            <option value="other">Другой</option>
+                        </select>
                     </div>
                     <div>
-                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Цена за пост ($)</label>
-                        <input type="number" id="add-channel-price" placeholder="30" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Подписчиков *</label>
+                        <input type="number" id="add-channel-members" placeholder="1000" required style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
                     </div>
                     <div>
-                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Контакт для связи</label>
-                        <input type="text" id="add-channel-contact" placeholder="@your_username" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Цена за пост ($) *</label>
+                        <input type="number" id="add-channel-price" placeholder="30" required style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Контакт для связи *</label>
+                        <input type="text" id="add-channel-contact" placeholder="@your_username" required style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
                     </div>
                 </div>
+                <p style="font-size: 11px; color: #999; margin-top: 10px;">* Все поля обязательны для заполнения</p>
                 <button onclick="addChannelForAds()" style="margin-top: 15px; padding: 12px 30px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">➕ Добавить канал</button>
                 <div id="add-channel-status" style="margin-top: 10px;"></div>
             </div>
@@ -3184,7 +3219,8 @@
         }
         
         function loadAdsChannels() {
-            fetch(`/api/ads-channels?country=${currentCountry}`)
+            const cityParam = currentAdsCity ? `&city=${encodeURIComponent(currentAdsCity)}` : '';
+            fetch(`/api/ads-channels?country=${currentCountry}${cityParam}`)
                 .then(r => r.json())
                 .then(data => {
                     const tbody = document.getElementById('ads-tbody');
@@ -3210,11 +3246,12 @@
                     let rows = '';
                     for (const ch of data.channels) {
                         const catName = categoryNames[ch.category] || ch.category;
+                        const cityName = ch.city || '';
                         rows += `
                             <tr style="border-bottom: 1px solid #eee;">
                                 <td style="padding: 12px;">
                                     <div style="font-weight: 600;">${ch.name}</div>
-                                    <div style="font-size: 12px; color: #888;">${catName}</div>
+                                    <div style="font-size: 12px; color: #888;">${catName}${cityName ? ' • ' + cityName : ''}</div>
                                 </td>
                                 <td style="padding: 12px; text-align: center;">${ch.members.toLocaleString()}</td>
                                 <td style="padding: 12px; text-align: center; font-weight: bold; color: #d4af37;">$${ch.price}</td>
@@ -3232,16 +3269,28 @@
                 .catch(e => console.error('Error loading ads channels:', e));
         }
         
+        let currentAdsCity = '';
+        
+        function filterAdsByCity(city) {
+            currentAdsCity = city;
+            document.querySelectorAll('.ads-city-btn').forEach(btn => {
+                btn.style.background = btn.dataset.city === city ? '#667eea' : '#fff';
+                btn.style.color = btn.dataset.city === city ? 'white' : '#333';
+            });
+            loadAdsChannels();
+        }
+        
         async function addChannelForAds() {
             const name = document.getElementById('add-channel-name').value.trim();
             const category = document.getElementById('add-channel-category').value;
+            const city = document.getElementById('add-channel-city').value;
             const members = parseInt(document.getElementById('add-channel-members').value) || 0;
-            const price = parseInt(document.getElementById('add-channel-price').value) || 30;
+            const price = parseInt(document.getElementById('add-channel-price').value) || 0;
             const contact = document.getElementById('add-channel-contact').value.trim();
             const status = document.getElementById('add-channel-status');
             
-            if (!name || !contact) {
-                status.innerHTML = '<span style="color: #dc3545;">Заполните название канала и контакт</span>';
+            if (!name || !contact || !city || !members || !price) {
+                status.innerHTML = '<span style="color: #dc3545;">Заполните все обязательные поля</span>';
                 return;
             }
             
@@ -3249,7 +3298,7 @@
                 const r = await fetch('/api/ads-channels/add', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({name, category, members, price, contact, country: currentCountry})
+                    body: JSON.stringify({name, category, city, members, price, contact, country: currentCountry})
                 });
                 const data = await r.json();
                 if (data.success) {

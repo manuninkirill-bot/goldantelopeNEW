@@ -340,6 +340,7 @@ def get_ads_channels():
     """Получить список одобренных рекламных каналов"""
     country = request.args.get('country', 'vietnam')
     show_pending = request.args.get('pending', '') == '1'
+    city_filter = request.args.get('city', '')
     data = load_ads_channels(country)
     
     if show_pending:
@@ -349,6 +350,9 @@ def get_ads_channels():
     else:
         # Для пользователей - только одобренные
         approved = [ch for ch in data.get('channels', []) if ch.get('approved', False)]
+        # Фильтр по городу
+        if city_filter:
+            approved = [ch for ch in approved if ch.get('city', '') == city_filter]
         return jsonify({'channels': approved})
 
 @app.route('/api/ads-channels/add', methods=['POST'])
@@ -373,10 +377,13 @@ def add_ads_channel():
             if ch['name'].lower() == name.lower():
                 return jsonify({'success': False, 'error': 'Канал уже добавлен'})
         
+        city = req.get('city', '').strip()
+        
         new_channel = {
             'id': f'ad_{int(time.time())}',
             'name': name,
             'category': category,
+            'city': city,
             'members': members,
             'price': price,
             'contact': contact,
