@@ -3280,11 +3280,13 @@
                                                         ${item.capacity ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">👥 ${item.capacity}</span>` : ''}
                                                     </div>`
                                                     : (category === 'real_estate' || category === 'realestate' 
-                                                        ? (item.listing_type === 'rent' ? '<span style="background:#2196F3;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🔑 Аренда</span>' : '<span style="background:#4CAF50;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🏠 Продажа</span>')
+                                                        ? `<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+                                                            <span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">${item.listing_type === 'rent' ? '🔑 Аренда' : '🏠 Продажа'}</span>
+                                                            ${item.area ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">📐 ${item.area}m²</span>` : ''}
+                                                            ${item.rooms ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">🛏 ${item.rooms} комн.</span>` : ''}
+                                                        </div>`
                                                         : ''))))
                                     }
-                                    ${category !== 'restaurants' && item.area ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">📐 ${item.area}m²</span>` : ''}
-                                    ${category !== 'restaurants' && item.rooms ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🛏 ${item.rooms} комн.</span>` : ''}
                                 </div>
                                 ${images.map((img, idx) => {
                                     // Форсируем правильный путь для GitHub Raw
