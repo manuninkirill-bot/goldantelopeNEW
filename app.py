@@ -503,10 +503,24 @@ def get_listings(category):
             filtered.sort(key=get_price_int)
         else:
             filtered.sort(key=lambda x: x.get('date', x.get('added_at', '1970-01-01')) or '1970-01-01', reverse=True)
+        
+        # Обновляем URL для фото из Telegram
+        for item in filtered:
+            if item.get('telegram_file_id'):
+                fresh_url = get_telegram_photo_url(item['telegram_file_id'])
+                if fresh_url:
+                    item['image_url'] = fresh_url
         return jsonify(filtered)
     
     # Сортировка по дате - новые сверху
     filtered.sort(key=lambda x: x.get('date', x.get('added_at', '1970-01-01')) or '1970-01-01', reverse=True)
+    
+    # Обновляем URL для фото из Telegram (генерируем свежие ссылки)
+    for item in filtered:
+        if item.get('telegram_file_id'):
+            fresh_url = get_telegram_photo_url(item['telegram_file_id'])
+            if fresh_url:
+                item['image_url'] = fresh_url
     
     return jsonify(filtered)
 
@@ -1245,13 +1259,17 @@ def admin_moderate():
                         pass
                 
                 if image_data:
-                    # Отправляем в Telegram канал
+                    # Отправляем в Telegram канал и получаем file_id
                     caption = f"📋 {listing.get('title', 'Объявление')}\n\n{listing.get('description', '')[:500]}"
-                    telegram_url = send_photo_to_channel(image_data, caption)
+                    file_id = send_photo_to_channel(image_data, caption)
                     
-                    if telegram_url:
-                        listing['image_url'] = telegram_url
+                    if file_id:
+                        listing['telegram_file_id'] = file_id
                         listing['telegram_photo'] = True
+                        # Получаем актуальный URL для первоначального отображения
+                        fresh_url = get_telegram_photo_url(file_id)
+                        if fresh_url:
+                            listing['image_url'] = fresh_url
             except Exception as e:
                 print(f"Error uploading photo to Telegram: {e}")
         
@@ -1741,7 +1759,7 @@ def manual_parse():
 TELEGRAM_PHOTO_CHANNEL = '-1003577636318'
 
 def send_photo_to_channel(image_data, caption=''):
-    """Отправить фото в Telegram канал и получить file_id"""
+    """Отправить фото в Telegram канал и получить file_id для постоянного хранения"""
     bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
     if not bot_token:
         print("TELEGRAM: Bot token not found!")
@@ -1762,21 +1780,12 @@ def send_photo_to_channel(image_data, caption=''):
         print(f"TELEGRAM: Response: {result}")
         
         if result.get('ok'):
-            # Получаем file_id и URL фото
             photo = result['result'].get('photo', [])
             if photo:
                 largest = max(photo, key=lambda x: x.get('file_size', 0))
                 file_id = largest.get('file_id')
-                
-                # Получаем URL файла
-                file_url = f"https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}"
-                file_response = requests.get(file_url).json()
-                
-                if file_response.get('ok'):
-                    file_path = file_response['result'].get('file_path')
-                    final_url = f"https://api.telegram.org/file/bot{bot_token}/{file_path}"
-                    print(f"TELEGRAM: Photo uploaded successfully! URL: {final_url[:80]}...")
-                    return final_url
+                print(f"TELEGRAM: Photo uploaded! file_id: {file_id[:50]}...")
+                return file_id
         else:
             print(f"TELEGRAM: Failed to send photo: {result.get('description', 'Unknown error')}")
         
@@ -1784,6 +1793,23 @@ def send_photo_to_channel(image_data, caption=''):
     except Exception as e:
         print(f"TELEGRAM: Error sending photo to channel: {e}")
         return None
+
+def get_telegram_photo_url(file_id):
+    """Получить актуальный URL фото по file_id"""
+    bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
+    if not bot_token or not file_id:
+        return None
+    
+    try:
+        file_url = f"https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}"
+        file_response = requests.get(file_url, timeout=10).json()
+        
+        if file_response.get('ok'):
+            file_path = file_response['result'].get('file_path')
+            return f"https://api.telegram.org/file/bot{bot_token}/{file_path}"
+    except:
+        pass
+    return None
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
