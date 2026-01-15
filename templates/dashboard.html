@@ -3146,21 +3146,12 @@
             fetch(`/api/status?country=${currentCountry}`)
                 .then(r => r.json())
                 .then(data => {
-                    let html = '';
-                    const categoryNames = {
-                        restaurants: '🍽️ Рестораны', tours: '🧳 Экскурсии', transport: '🏍️ Транспорт',
-                        real_estate: '🏠 Недвижимость', money_exchange: '💱 Обмен', entertainment: '👶 Для детей',
-                        marketplace: '🛍️ Барахолка', visas: '🏖️ Визаран', news: '📸 Фотосессия', chat: '💬 Чат',
-                        medicine: '🏥 Медицина'
-                    };
-                    for (let [cat, count] of Object.entries(data.categories)) {
-                        let label = categoryNames[cat] || `📦 ${cat}`;
-                        html += `<div class="stat-box"><div class="number">${count}</div><div class="label">${label}</div></div>`;
-                    }
-                    document.getElementById('stats-grid').innerHTML = html;
-                    document.getElementById('total-items').innerText = data.total_listings;
-                    document.getElementById('parser-status').innerText = data.parser_status === 'connected' ? 'Подключен' : 'Отключен';
-                    document.getElementById('last-update').innerText = new Date(data.last_update).toLocaleTimeString('ru-RU');
+                    const totalEl = document.getElementById('total-items');
+                    const statusEl = document.getElementById('parser-status');
+                    const updateEl = document.getElementById('last-update');
+                    if (totalEl) totalEl.innerText = data.total_listings;
+                    if (statusEl) statusEl.innerText = data.parser_status === 'connected' ? 'Подключен' : 'Отключен';
+                    if (updateEl) updateEl.innerText = new Date(data.last_update).toLocaleTimeString('ru-RU');
                 });
             
             loadGroupsStats();
