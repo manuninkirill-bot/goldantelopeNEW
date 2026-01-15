@@ -1222,6 +1222,17 @@
         <!-- Транспорт -->
         <div id="transport" class="content">
             <div id="vietnam-transport-buttons" style="padding: 20px;">
+                <!-- Фильтр по городам -->
+                <div style="margin-bottom: 20px;">
+                    <div style="font-weight: 600; color: #333; margin-bottom: 8px; font-size: 14px;">🏙️ Город:</div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="transport-city-btn" data-city="" onclick="filterTransportCity('')" style="padding: 8px 16px; border: 2px solid #d4af37; background: #d4af37; color: white; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600;">Все</button>
+                        <button class="transport-city-btn" data-city="Nha Trang" onclick="filterTransportCity('Nha Trang')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">Нячанг</button>
+                        <button class="transport-city-btn" data-city="Da Nang" onclick="filterTransportCity('Da Nang')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">Дананг</button>
+                        <button class="transport-city-btn" data-city="Phu Quoc" onclick="filterTransportCity('Phu Quoc')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">Фукуок</button>
+                        <button class="transport-city-btn" data-city="Ho Chi Minh" onclick="filterTransportCity('Ho Chi Minh')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">Хошимин</button>
+                    </div>
+                </div>
                 <div class="tour-grid-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px; max-width: 1000px;">
                     <div class="tour-city-btn transport-type-btn" data-type="bikes" onclick="filterTransportByType('bikes')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #d4af37;">
                         <img src="/static/images/transport/bikes.jpg" style="width: 100%; height: 100%; object-fit: cover;">
@@ -3119,6 +3130,25 @@
         }
 
         let currentTransportType = 'bikes';
+        let currentTransportCity = '';
+        
+        function filterTransportCity(city) {
+            currentTransportCity = city;
+            document.querySelectorAll('.transport-city-btn').forEach(btn => {
+                if (btn.dataset.city === city) {
+                    btn.style.background = '#d4af37';
+                    btn.style.color = 'white';
+                    btn.style.border = '2px solid #d4af37';
+                    btn.style.fontWeight = '600';
+                } else {
+                    btn.style.background = '#fff';
+                    btn.style.color = '#333';
+                    btn.style.border = '2px solid #ccc';
+                    btn.style.fontWeight = 'normal';
+                }
+            });
+            loadListings('transport', currentTransportType);
+        }
         
         function filterTransportByType(type) {
             currentTransportType = type;
@@ -3285,6 +3315,7 @@
             if (city) params.append('city', city);
             
             if (category === 'transport') {
+                if (currentTransportCity) params.append('city', currentTransportCity);
                 if (document.getElementById('bike-model')) params.append('model', document.getElementById('bike-model').value);
                 if (document.getElementById('bike-year')) params.append('year', document.getElementById('bike-year').value);
                 if (document.getElementById('bike-price-min')) params.append('price_min', document.getElementById('bike-price-min').value);

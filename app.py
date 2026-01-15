@@ -464,6 +464,18 @@ def get_listings(category):
                 pass
     
     if category == 'transport':
+        # Фильтр по городу для transport
+        if 'city' in filters and filters['city']:
+            city_filter = filters['city'].lower()
+            city_mapping = {
+                'nha trang': ['nha trang', 'nhatrang', 'нячанг'],
+                'da nang': ['da nang', 'danang', 'дананг'],
+                'phu quoc': ['phu quoc', 'phuquoc', 'фукуок'],
+                'ho chi minh': ['ho chi minh', 'hochiminh', 'hcm', 'хошимин', 'сайгон']
+            }
+            targets = city_mapping.get(city_filter, [city_filter])
+            filtered = [x for x in filtered if any(t in str(x.get('city', '')).lower() or t in str(x.get('location', '')).lower() or t in str(x.get('description', '')).lower() for t in targets)]
+        
         # Фильтр по типу (sale, rent)
         if 'type' in filters and filters['type']:
             type_filter = filters['type'].lower()
