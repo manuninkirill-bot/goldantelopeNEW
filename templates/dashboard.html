@@ -3263,7 +3263,9 @@
                                 <div style="position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:4px;z-index:10;">
                                     ${category === 'restaurants' 
                                         ? `<span style="background:#FF5722;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">${restTypeBadge}</span>`
-                                        : (item.listing_type === 'rent' ? '<span style="background:#2196F3;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🔑 Аренда</span>' : '<span style="background:#4CAF50;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🏠 Продажа</span>')
+                                        : (category === 'real_estate' || category === 'realestate' 
+                                            ? (item.listing_type === 'rent' ? '<span style="background:#2196F3;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🔑 Аренда</span>' : '<span style="background:#4CAF50;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🏠 Продажа</span>')
+                                            : '')
                                     }
                                     ${category === 'restaurants' && cuisineType ? `<span style="background:#795548;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">${cuisineType}</span>` : ''}
                                     ${category === 'restaurants' && item.city ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">📍 ${getCityRu(item.city)}</span>` : ''}
