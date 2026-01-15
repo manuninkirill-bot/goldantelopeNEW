@@ -2120,6 +2120,160 @@ def delete_city():
     
     return jsonify({'error': 'City not found'}), 404
 
+@app.route('/api/admin/edit-city-inline', methods=['POST'])
+def edit_city_inline():
+    """Редактировать город из основного меню (название и фото)"""
+    password = request.form.get('password', '')
+    admin_key = os.environ.get('ADMIN_KEY', '29Sept1982!')
+    
+    if password != admin_key:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    country = request.form.get('country', 'vietnam')
+    section = request.form.get('section', 'restaurants')
+    old_name = request.form.get('old_name', '')
+    new_name = request.form.get('new_name', '')
+    photo = request.files.get('photo')
+    
+    if not old_name or not new_name:
+        return jsonify({'error': 'City names required'}), 400
+    
+    # Обновляем citiesByCountry в dashboard.html через JSON config
+    config_file = f'city_config_{country}.json'
+    config = {}
+    if os.path.exists(config_file):
+        with open(config_file, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+    
+    # Обновляем название города в списке
+    if section not in config:
+        config[section] = {}
+    
+    section_data = config.get(section, {})
+    cities_list = section_data.get('cities', [])
+    
+    # Ищем город и меняем название
+    for i, city in enumerate(cities_list):
+        if city == old_name:
+            cities_list[i] = new_name
+            break
+    
+    section_data['cities'] = cities_list
+    
+    # Обрабатываем фото
+    if photo and photo.filename:
+        file_data = photo.read()
+        ext = photo.filename.rsplit('.', 1)[-1].lower() if '.' in photo.filename else 'jpg'
+        
+        os.makedirs(f'static/icons/cities/{country}/{section}', exist_ok=True)
+        safe_name = new_name.replace(' ', '_').lower()
+        filename = f"{safe_name}.{ext}"
+        filepath = f"static/icons/cities/{country}/{section}/{filename}"
+        with open(filepath, 'wb') as f:
+            f.write(file_data)
+        
+        # Сохраняем URL фото
+        if 'images' not in section_data:
+            section_data['images'] = {}
+        section_data['images'][new_name] = f"/{filepath}"
+    
+    config[section] = section_data
+    
+    with open(config_file, 'w', encoding='utf-8') as f:
+        json.dump(config, f, ensure_ascii=False, indent=2)
+    
+    return jsonify({'success': True, 'message': 'Город обновлён'})
+
+@app.route('/api/admin/move-city-position', methods=['POST'])
+def move_city_position():
+    """Переместить город вверх/вниз в списке"""
+    password = request.json.get('password', '')
+    admin_key = os.environ.get('ADMIN_KEY', '29Sept1982!')
+    
+    if password != admin_key:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    country = request.json.get('country', 'vietnam')
+    section = request.json.get('section', 'restaurants')
+    city_name = request.json.get('city_name', '')
+    direction = request.json.get('direction', 0)  # -1 вверх, +1 вниз
+    
+    if not city_name:
+        return jsonify({'error': 'City name required'}), 400
+    
+    config_file = f'city_config_{country}.json'
+    config = {}
+    if os.path.exists(config_file):
+        with open(config_file, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+    
+    if section not in config:
+        return jsonify({'error': 'Section not found'}), 404
+    
+    cities_list = config[section].get('cities', [])
+    
+    # Находим индекс города
+    try:
+        idx = cities_list.index(city_name)
+    except ValueError:
+        return jsonify({'error': 'City not found'}), 404
+    
+    new_idx = idx + direction
+    
+    if new_idx < 0 or new_idx >= len(cities_list):
+        return jsonify({'error': 'Cannot move beyond list boundaries'}), 400
+    
+    # Меняем местами
+    cities_list[idx], cities_list[new_idx] = cities_list[new_idx], cities_list[idx]
+    config[section]['cities'] = cities_list
+    
+    with open(config_file, 'w', encoding='utf-8') as f:
+        json.dump(config, f, ensure_ascii=False, indent=2)
+    
+    return jsonify({'success': True, 'message': 'Город перемещён'})
+
+@app.route('/api/admin/delete-city-inline', methods=['POST'])
+def delete_city_inline():
+    """Удалить город из основного меню"""
+    password = request.json.get('password', '')
+    admin_key = os.environ.get('ADMIN_KEY', '29Sept1982!')
+    
+    if password != admin_key:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    country = request.json.get('country', 'vietnam')
+    section = request.json.get('section', 'restaurants')
+    city_name = request.json.get('city_name', '')
+    
+    if not city_name:
+        return jsonify({'error': 'City name required'}), 400
+    
+    config_file = f'city_config_{country}.json'
+    config = {}
+    if os.path.exists(config_file):
+        with open(config_file, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+    
+    if section not in config:
+        return jsonify({'error': 'Section not found'}), 404
+    
+    cities_list = config[section].get('cities', [])
+    
+    if city_name in cities_list:
+        cities_list.remove(city_name)
+        config[section]['cities'] = cities_list
+        
+        # Удаляем фото если есть
+        if 'images' in config[section] and city_name in config[section]['images']:
+            del config[section]['images'][city_name]
+        
+        with open(config_file, 'w', encoding='utf-8') as f:
+            json.dump(config, f, ensure_ascii=False, indent=2)
+        
+        return jsonify({'success': True, 'message': 'Город удалён'})
+    
+    return jsonify({'error': 'City not found'}), 404
+
 # ============ РУЧНОЙ ПАРСЕР ============
 
 @app.route('/api/admin/manual-parse', methods=['POST'])

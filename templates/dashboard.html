@@ -2184,6 +2184,43 @@
             </div>
         </div>
 
+        <!-- Модальное окно для редактирования города -->
+        <div id="city-edit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+            <div style="background: white; border-radius: 12px; padding: 20px; max-width: 450px; width: 90%;">
+                <h3 style="margin: 0 0 15px 0; color: #1565c0;">🏙️ Редактировать город</h3>
+                <input type="hidden" id="city-edit-section">
+                <input type="hidden" id="city-edit-index">
+                <input type="hidden" id="city-edit-old-name">
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; color: #333;">Название города:</label>
+                    <input type="text" id="city-edit-name" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; color: #333;">Фото города:</label>
+                    <img id="city-edit-preview" src="" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; display: none;">
+                    <input type="file" id="city-edit-photo" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; color: #333;">Позиция:</label>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="moveCityPosition(-1)" style="flex: 1; padding: 10px; background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; border-radius: 6px; cursor: pointer; font-weight: 600;">⬆️ Выше</button>
+                        <button onclick="moveCityPosition(1)" style="flex: 1; padding: 10px; background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; border-radius: 6px; cursor: pointer; font-weight: 600;">⬇️ Ниже</button>
+                    </div>
+                </div>
+                
+                <div id="city-edit-status" style="font-size: 13px; margin-bottom: 15px;"></div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="saveCityChanges()" style="flex: 1; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">💾 Сохранить</button>
+                    <button onclick="deleteCityFromModal()" style="padding: 12px 20px; background: #ff6b6b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">🗑️</button>
+                    <button onclick="closeCityEditModal()" style="padding: 12px 20px; background: #eee; color: #333; border: none; border-radius: 6px; cursor: pointer;">Отмена</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Модальное окно для редактирования -->
         <div id="edit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; overflow-y: auto;">
             <div style="background: white; border-radius: 12px; padding: 20px; max-width: 500px; width: 90%; margin: 20px auto;">
@@ -2662,30 +2699,6 @@
                         <div id="channel-result" style="font-size: 12px; margin-bottom: 10px;"></div>
                         <div id="channels-list" style="max-height: 400px; overflow-y: auto; background: white; border-radius: 6px; border: 1px solid #ddd;">
                             <!-- Каналы будут здесь -->
-                        </div>
-                    </div>
-
-                    <!-- Редактирование городов -->
-                    <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #ddd; margin-top: 20px;">
-                        <h3 style="margin: 0 0 15px 0; color: #333;">🏙️ Редактирование городов</h3>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-                            <select id="city-category" style="padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;">
-                                <option value="restaurants">Рестораны</option>
-                                <option value="tours">Экскурсии</option>
-                                <option value="entertainment">Развлечения</option>
-                                <option value="news">Фотосессия</option>
-                            </select>
-                            <button onclick="loadCitiesAdmin()" style="padding: 10px 20px; background: #1565c0; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">🔄 Загрузить города</button>
-                        </div>
-                        <div id="cities-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;"></div>
-                        <div style="border-top: 1px solid #eee; padding-top: 15px; margin-top: 15px;">
-                            <h4 style="margin: 0 0 10px 0; color: #666;">➕ Добавить город</h4>
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <input type="text" id="new-city-name" placeholder="Название города" style="flex: 1; min-width: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
-                                <input type="file" id="new-city-photo" accept="image/*" style="flex: 1; min-width: 150px; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
-                                <button onclick="addCityAdmin()" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">➕ Добавить</button>
-                            </div>
-                            <div id="city-result" style="font-size: 12px; margin-top: 10px;"></div>
                         </div>
                     </div>
 
@@ -3656,8 +3669,11 @@
                 cities.forEach((city, idx) => {
                     const isFirst = idx === 0;
                     const img = sectionImages[city] || 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop';
+                    const editBtn = isAdminAuthorized && currentCountry !== 'vietnam' ? 
+                        `<button onclick="event.stopPropagation(); openCityEditModal('${section}', ${idx}, '${city}', '${img}')" style="position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; background: rgba(255,255,255,0.95); border: none; border-radius: 50%; cursor: pointer; font-size: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 10;">✏️</button>` : '';
                     html += `
                         <div class="tour-city-btn ${section}-city-btn" data-city="${city}" onclick="${sectionFilters[section]}('${city}')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid ${isFirst ? '#d4af37' : 'transparent'};">
+                            ${editBtn}
                             <img src="${img}" style="width: 100%; height: 100%; object-fit: cover;">
                             <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
                                 <div class="city-name" style="font-weight: bold; font-size: 16px;">${city}</div>
@@ -5131,6 +5147,145 @@
                 }
             } catch (e) {
                 alert('Ошибка сети');
+            }
+        }
+
+        // Редактирование городов из основного меню
+        function openCityEditModal(section, index, cityName, imageUrl) {
+            document.getElementById('city-edit-section').value = section;
+            document.getElementById('city-edit-index').value = index;
+            document.getElementById('city-edit-old-name').value = cityName;
+            document.getElementById('city-edit-name').value = cityName;
+            document.getElementById('city-edit-photo').value = '';
+            document.getElementById('city-edit-status').innerHTML = '';
+            
+            const preview = document.getElementById('city-edit-preview');
+            if (imageUrl) {
+                preview.src = imageUrl;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+            
+            document.getElementById('city-edit-modal').style.display = 'flex';
+        }
+        
+        function closeCityEditModal() {
+            document.getElementById('city-edit-modal').style.display = 'none';
+        }
+        
+        async function saveCityChanges() {
+            const section = document.getElementById('city-edit-section').value;
+            const oldName = document.getElementById('city-edit-old-name').value;
+            const newName = document.getElementById('city-edit-name').value.trim();
+            const photoInput = document.getElementById('city-edit-photo');
+            const status = document.getElementById('city-edit-status');
+            
+            if (!newName) {
+                status.innerHTML = '<span style="color: #ff6b6b;">Введите название города</span>';
+                return;
+            }
+            
+            status.innerHTML = '<span style="color: #1565c0;">💾 Сохранение...</span>';
+            
+            const formData = new FormData();
+            formData.append('password', adminPassword_val);
+            formData.append('country', currentCountry);
+            formData.append('section', section);
+            formData.append('old_name', oldName);
+            formData.append('new_name', newName);
+            if (photoInput.files[0]) {
+                formData.append('photo', photoInput.files[0]);
+            }
+            
+            try {
+                const r = await fetch('/api/admin/edit-city-inline', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await r.json();
+                
+                if (data.success) {
+                    status.innerHTML = '<span style="color: #4CAF50;">✅ Сохранено!</span>';
+                    setTimeout(() => {
+                        closeCityEditModal();
+                        renderDynamicCityButtons();
+                    }, 500);
+                } else {
+                    status.innerHTML = '<span style="color: #ff6b6b;">❌ ' + (data.error || 'Ошибка') + '</span>';
+                }
+            } catch (e) {
+                status.innerHTML = '<span style="color: #ff6b6b;">❌ Ошибка сети</span>';
+            }
+        }
+        
+        async function moveCityPosition(direction) {
+            const section = document.getElementById('city-edit-section').value;
+            const index = parseInt(document.getElementById('city-edit-index').value);
+            const cityName = document.getElementById('city-edit-old-name').value;
+            const status = document.getElementById('city-edit-status');
+            
+            status.innerHTML = '<span style="color: #1565c0;">🔄 Перемещение...</span>';
+            
+            try {
+                const r = await fetch('/api/admin/move-city-position', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        password: adminPassword_val,
+                        country: currentCountry,
+                        section: section,
+                        city_name: cityName,
+                        direction: direction
+                    })
+                });
+                const data = await r.json();
+                
+                if (data.success) {
+                    status.innerHTML = '<span style="color: #4CAF50;">✅ Перемещено!</span>';
+                    document.getElementById('city-edit-index').value = index + direction;
+                    setTimeout(() => {
+                        closeCityEditModal();
+                        renderDynamicCityButtons();
+                    }, 500);
+                } else {
+                    status.innerHTML = '<span style="color: #ff6b6b;">❌ ' + (data.error || 'Ошибка') + '</span>';
+                }
+            } catch (e) {
+                status.innerHTML = '<span style="color: #ff6b6b;">❌ Ошибка сети</span>';
+            }
+        }
+        
+        async function deleteCityFromModal() {
+            const section = document.getElementById('city-edit-section').value;
+            const cityName = document.getElementById('city-edit-old-name').value;
+            const status = document.getElementById('city-edit-status');
+            
+            if (!confirm(`Удалить город "${cityName}"?`)) return;
+            
+            status.innerHTML = '<span style="color: #1565c0;">🗑️ Удаление...</span>';
+            
+            try {
+                const r = await fetch('/api/admin/delete-city-inline', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        password: adminPassword_val,
+                        country: currentCountry,
+                        section: section,
+                        city_name: cityName
+                    })
+                });
+                const data = await r.json();
+                
+                if (data.success) {
+                    closeCityEditModal();
+                    renderDynamicCityButtons();
+                } else {
+                    status.innerHTML = '<span style="color: #ff6b6b;">❌ ' + (data.error || 'Ошибка') + '</span>';
+                }
+            } catch (e) {
+                status.innerHTML = '<span style="color: #ff6b6b;">❌ Ошибка сети</span>';
             }
         }
 
