@@ -1371,7 +1371,7 @@
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
                         <div>
-                            <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">💰 Цена (VND) *</label>
+                            <label id="transport-price-label" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">💰 Цена (VND) *</label>
                             <input type="number" id="transport-price" required placeholder="900000000" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
                         </div>
                         <div>
@@ -1584,7 +1584,7 @@
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
                         <div>
-                            <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">💰 Цена (VND) *</label>
+                            <label id="realestate-price-label" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">💰 Цена (VND) *</label>
                             <input type="number" id="realestate-price" required placeholder="5000000000" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
                         </div>
                         <div>
@@ -2958,6 +2958,9 @@
             renderKidsCityFilter();
             updateKidsCitySelect();
             
+            // Обновляем валюту в формах
+            updateFormCurrency();
+            
             // Обновляем города в формах подачи объявлений
             updateFormCities();
 
@@ -3629,6 +3632,22 @@
                 html += `<option value="${city.value}">${city.label}</option>`;
             });
             select.innerHTML = html;
+        }
+        
+        function updateFormCurrency() {
+            const currencies = {
+                'vietnam': 'VND',
+                'thailand': 'THB',
+                'india': 'INR',
+                'indonesia': 'IDR'
+            };
+            const currency = currencies[currentCountry] || 'VND';
+            
+            const transportLabel = document.getElementById('transport-price-label');
+            if (transportLabel) transportLabel.textContent = '💰 Цена (' + currency + ') *';
+            
+            const realestateLabel = document.getElementById('realestate-price-label');
+            if (realestateLabel) realestateLabel.textContent = '💰 Цена (' + currency + ') *';
         }
         
         function renderAdsCityFilter() {
@@ -4473,6 +4492,7 @@
         updateAllCityCounts();
         renderKidsCityFilter();
         updateKidsCitySelect();
+        updateFormCurrency();
         
         updateRates();
         loadStats();
