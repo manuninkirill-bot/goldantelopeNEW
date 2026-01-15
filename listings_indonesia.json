@@ -7666,6 +7666,60 @@
       "year": null
     }
   ],
+  "news": [
+    {
+      "id": "indo_news_13790",
+      "category": "news",
+      "title": "Synthetic indices are built for traders who never want to miss an opportunity. With round-the-clock ",
+      "description": "Synthetic indices are built for traders who never want to miss an opportunity. With round-the-clock trading, high volatility, and zero impact from real-world news, you get a market that’s always in motion—even on weekends. Whether you're looking to refine your skills or capitalize on price movements anytime, synthetic indices offer the ultimate flexibility to trade on your terms.\n\nBut success isn’t just about market access—it’s about strategy and risk management. Trade smart, manage your exposure, and make every move count.\n\nReady to level up? Open your trading account via the link below and stay in the loop\n\nStart Trading Now👇\n\nhttps://track.deriv.com/_m6fxT5mRsEq2vdm9PpHVCmNd7ZgqdRLk/1/",
+      "source_channel": "@indonesia_chat",
+      "message_id": 13790,
+      "date": "2025-12-14T09:46:32+00:00",
+      "image_url": null,
+      "price": null,
+      "model": null,
+      "year": null
+    },
+    {
+      "id": "indo_news_5",
+      "category": "news",
+      "title": "👋",
+      "description": "👋",
+      "source_channel": "@news_jakarta",
+      "message_id": 5,
+      "date": "2024-06-17T01:12:29+00:00",
+      "image_url": null,
+      "price": null,
+      "model": null,
+      "year": null
+    },
+    {
+      "id": "indo_news_4",
+      "category": "news",
+      "title": "Hello",
+      "description": "Hello",
+      "source_channel": "@news_jakarta",
+      "message_id": 4,
+      "date": "2024-04-22T13:05:42+00:00",
+      "image_url": null,
+      "price": null,
+      "model": null,
+      "year": null
+    },
+    {
+      "id": "indo_news_3",
+      "category": "news",
+      "title": "To purchase a channel, please contact @de3sw2\nДля покупки канала обращайтесь к @de3sw2",
+      "description": "To purchase a channel, please contact @de3sw2\nДля покупки канала обращайтесь к @de3sw2",
+      "source_channel": "@news_jakarta",
+      "message_id": 3,
+      "date": "2022-12-18T22:06:24+00:00",
+      "image_url": null,
+      "price": null,
+      "model": null,
+      "year": null
+    }
+  ],
   "medicine": [
     {
       "id": "@kesehatan_indonesia_8",
@@ -21211,60 +21265,6 @@
       "date": "2025-12-26T04:14:08+00:00",
       "source_channel": "@bali_obmenn",
       "message_id": 241014
-    }
-  ],
-  "photoshoot": [
-    {
-      "id": "indo_news_13790",
-      "category": "news",
-      "title": "Synthetic indices are built for traders who never want to miss an opportunity. With round-the-clock ",
-      "description": "Synthetic indices are built for traders who never want to miss an opportunity. With round-the-clock trading, high volatility, and zero impact from real-world news, you get a market that’s always in motion—even on weekends. Whether you're looking to refine your skills or capitalize on price movements anytime, synthetic indices offer the ultimate flexibility to trade on your terms.\n\nBut success isn’t just about market access—it’s about strategy and risk management. Trade smart, manage your exposure, and make every move count.\n\nReady to level up? Open your trading account via the link below and stay in the loop\n\nStart Trading Now👇\n\nhttps://track.deriv.com/_m6fxT5mRsEq2vdm9PpHVCmNd7ZgqdRLk/1/",
-      "source_channel": "@indonesia_chat",
-      "message_id": 13790,
-      "date": "2025-12-14T09:46:32+00:00",
-      "image_url": null,
-      "price": null,
-      "model": null,
-      "year": null
-    },
-    {
-      "id": "indo_news_5",
-      "category": "news",
-      "title": "👋",
-      "description": "👋",
-      "source_channel": "@news_jakarta",
-      "message_id": 5,
-      "date": "2024-06-17T01:12:29+00:00",
-      "image_url": null,
-      "price": null,
-      "model": null,
-      "year": null
-    },
-    {
-      "id": "indo_news_4",
-      "category": "news",
-      "title": "Hello",
-      "description": "Hello",
-      "source_channel": "@news_jakarta",
-      "message_id": 4,
-      "date": "2024-04-22T13:05:42+00:00",
-      "image_url": null,
-      "price": null,
-      "model": null,
-      "year": null
-    },
-    {
-      "id": "indo_news_3",
-      "category": "news",
-      "title": "To purchase a channel, please contact @de3sw2\nДля покупки канала обращайтесь к @de3sw2",
-      "description": "To purchase a channel, please contact @de3sw2\nДля покупки канала обращайтесь к @de3sw2",
-      "source_channel": "@news_jakarta",
-      "message_id": 3,
-      "date": "2022-12-18T22:06:24+00:00",
-      "image_url": null,
-      "price": null,
-      "model": null,
-      "year": null
     }
   ]
 }

@@ -860,8 +860,8 @@
             <button class="tab" data-tab="exchange" onclick="switchTab('exchange')"><img src="/static/icons/exchange.png" alt="Обмен"><span>Обмен денег</span></button>
             <button class="tab" data-tab="settings" onclick="switchTab('settings')"><img src="/static/icons/kids_new.png" alt="Для детей"><span>Для детей</span></button>
             <button class="tab" data-tab="marketplace" onclick="switchTab('marketplace')"><img src="/static/images/icons/marketplace.jpg" alt="Барахолка"><span>Барахолка</span></button>
-            <button class="tab" data-tab="visas" onclick="switchTab('visas')"><img src="/attached_assets/визаран_лаос_1768450588287.jpeg" alt="Визаран"><span>Визаран</span></button>
-            <button class="tab" data-tab="photoshoot" onclick="switchTab('photoshoot')"><img src="/attached_assets/фотосессия_1768450588284.jpg" alt="Фотосессия"><span>Фотосессия</span></button>
+            <button class="tab" data-tab="visas" onclick="switchTab('visas')"><img src="/static/icons/visas.jpg" alt="Визаран"><span>Визаран</span></button>
+            <button class="tab" data-tab="news" onclick="switchTab('news')"><img src="/static/images/icons/news.jpg" alt="Новости"><span>Новости</span></button>
             <button class="tab" data-tab="medicine" onclick="switchTab('medicine')"><img src="/static/icons/medicine_new.png" alt="Медицина"><span>Медицина</span></button>
             <button class="tab" data-tab="chat" onclick="switchTab('chat')"><img src="/static/images/icons/chat.jpg" alt="Чат"><span>Чат</span></button>
             <button class="tab" data-tab="stats" onclick="switchTab('stats')"><img src="/static/icons/statistics.png" alt="Статистика"><span>Статистика</span></button>
@@ -2932,63 +2932,6 @@
             
             imgs[activeIdx].classList.add('active');
             dots[activeIdx].classList.add('active');
-        }
-
-        const categoryCityConfigs = {
-            'restaurants': {
-                'vietnam': ['Нячанг', 'Дананг', 'Хошимин', 'Ханой', 'Фукуок', 'Фантьет', 'Муйне', 'Камрань', 'Далат', 'Хойан'],
-                'thailand': ['Пхукет', 'Паттайя', 'Бангкок', 'Самуи', 'Панган', 'Чиангмай']
-            },
-            'tours': {
-                'vietnam': ['Нячанг', 'Дананг', 'Хошимин', 'Ханой', 'Фукуок', 'Фантьет', 'Муйне', 'Камрань', 'Далат', 'Хойан'],
-                'thailand': ['Пхукет', 'Паттайя', 'Бангкок', 'Самуи', 'Панган', 'Чиангмай']
-            },
-            'entertainment': {
-                'vietnam': ['Нячанг', 'Дананг', 'Хошимин', 'Ханой', 'Фукуок', 'Фантьет', 'Муйне', 'Камрань', 'Далат', 'Хойан'],
-                'thailand': ['Пхукет', 'Паттайя', 'Бангкок', 'Самуи', 'Панган', 'Чиангмай']
-            },
-            'visas': {
-                'vietnam': ['Лаос', 'Камбоджа', 'Таиланд'],
-                'thailand': []
-            },
-            'photoshoot': {
-                'vietnam': ['Нячанг', 'Дананг', 'Фукуок', 'Хошимин'],
-                'thailand': []
-            }
-        };
-
-        function updateCityFilters(category, country) {
-            const container = document.getElementById('city-filters-container');
-            const gridContainer = document.getElementById('tour-grid-container');
-            
-            if (!container || !gridContainer) return;
-            
-            const config = categoryCityConfigs[category];
-            if (!config || !config[country] || config[country].length === 0) {
-                container.style.display = 'none';
-                return;
-            }
-
-            container.style.display = 'block';
-            gridContainer.innerHTML = '';
-
-            // Add "All" button
-            const allBtn = createCityButton('Все', '', category, country);
-            gridContainer.appendChild(allBtn);
-
-            config[country].forEach(city => {
-                const btn = createCityButton(city, city, category, country);
-                gridContainer.appendChild(btn);
-            });
-        }
-
-        function createCityButton(name, value, category, country) {
-            const btn = document.createElement('div');
-            btn.className = 'tour-city-btn';
-            btn.style.cursor = 'pointer';
-            btn.onclick = () => loadListings(category, value);
-            btn.innerHTML = `<div class="city-info"><div class="city-name">${name}</div></div>`;
-            return btn;
         }
 
         function loadListings(category, city = '') {
