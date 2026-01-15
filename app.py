@@ -2320,6 +2320,14 @@ def send_chat_message():
     chat_data['messages'].append(new_message)
     save_chat_data(chat_data)
     
+    # Дублируем сообщение в Telegram канал
+    if TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID:
+        try:
+            tg_text = f"💬 <b>{telegram_id}</b>\n{message}"
+            send_telegram_notification(tg_text)
+        except Exception as e:
+            print(f"Error sending chat to Telegram: {e}")
+    
     return jsonify({'success': True})
 
 @app.route('/api/admin/chat-blacklist', methods=['GET', 'POST'])
