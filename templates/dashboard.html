@@ -3270,45 +3270,6 @@
         
         function loadGroupsStats() {
             loadAdsChannels();
-            fetch(`/api/groups-stats?country=${currentCountry}`)
-                .then(r => r.json())
-                .then(data => {
-                    if (!data.categories) return;
-                    let totalGroups = 0, totalParticipants = 0, totalOnline = 0, totalListings = 0;
-                    for (const [cat, stats] of Object.entries(data.categories)) {
-                        totalGroups += stats.groups;
-                        totalParticipants += stats.participants;
-                        totalOnline += stats.online;
-                        totalListings += stats.listings;
-                    }
-                    console.log('Stats loaded:', totalGroups, 'groups');
-                })
-                .catch(e => console.error('Error loading groups stats:', e));
-                        rows += `
-                            <tr style="border-bottom: 1px solid #eee;">
-                                <td style="padding: 10px;"><span class="category-link" onclick="switchTab('${tabName}'); loadListings('${cat === 'transport' ? 'transport' : cat === 'real_estate' ? 'real_estate' : cat === 'money_exchange' ? 'money_exchange' : cat}')">${cat}</span></td>
-                                <td style="padding: 10px; text-align: center;">${stats.groups}</td>
-                                <td style="padding: 10px; text-align: center; color: #2196F3;">${stats.participants.toLocaleString()}</td>
-                                <td style="padding: 10px; text-align: center; color: #4CAF50;">${stats.online.toLocaleString()}</td>
-                                <td style="padding: 10px; text-align: center; color: #d4af37;">${stats.listings}</td>
-                            </tr>
-                        `;
-                    }
-                    
-                    tbody.innerHTML = rows;
-                    tfoot.innerHTML = `
-                        <tr>
-                            <td style="padding: 10px; border-radius: 0 0 0 8px;">ИТОГО</td>
-                            <td style="padding: 10px; text-align: center;">${totalGroups}</td>
-                            <td style="padding: 10px; text-align: center; color: #2196F3;">${totalParticipants.toLocaleString()}</td>
-                            <td style="padding: 10px; text-align: center; color: #4CAF50;">${totalOnline.toLocaleString()}</td>
-                            <td style="padding: 10px; text-align: center; color: #d4af37; border-radius: 0 0 8px 0;">${totalListings}</td>
-                        </tr>
-                    `;
-                })
-                .catch(err => {
-                    console.error('Groups stats error:', err);
-                });
         }
 
         function isEnglishOnly(text) {
