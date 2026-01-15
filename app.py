@@ -623,6 +623,29 @@ def get_listings(category):
             except ValueError:
                 pass
     
+    # Фильтры для визарана
+    if category == 'visas':
+        # Фильтр по направлению (Камбоджа/Лаос)
+        if 'city' in filters and filters['city']:
+            city_filter = filters['city'].lower()
+            filtered = [x for x in filtered if city_filter in str(x.get('city', '')).lower() or city_filter in str(x.get('title', '')).lower() or city_filter in str(x.get('description', '')).lower()]
+        
+        # Фильтр по гражданству (россия/казахстан)
+        if 'nationality' in filters and filters['nationality']:
+            nationality = filters['nationality'].lower()
+            nationality_keywords = {
+                'russia': ['росси', 'россиян', 'рф', 'russia', 'russian', 'для русских', 'для рф'],
+                'kazakhstan': ['казах', 'казакстан', 'kz', 'kazakhstan', 'для казахов', 'кз']
+            }
+            keywords = nationality_keywords.get(nationality, [])
+            if keywords:
+                filtered = [x for x in filtered if any(kw in (x.get('description', '') + ' ' + x.get('title', '')).lower() for kw in keywords)]
+        
+        # Фильтр по сроку (45 / 90 дней)
+        if 'days' in filters and filters['days']:
+            days = filters['days']
+            filtered = [x for x in filtered if days in (x.get('description', '') + ' ' + x.get('title', ''))]
+
     if category == 'transport':
         # Фильтр по городу для transport
         if 'city' in filters and filters['city']:

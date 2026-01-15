@@ -1899,6 +1899,21 @@
                         </div>
                     </div>
                 </div>
+                <!-- Фильтры визарана -->
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span style="font-weight: 600; color: #333;">🌍 Гражданство:</span>
+                        <button class="visa-filter-btn visa-nationality-btn active" data-nationality="all" onclick="filterVisasByNationality('all')" style="padding: 8px 16px; border: 2px solid #d4af37; background: #d4af37; color: white; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600;">Все</button>
+                        <button class="visa-filter-btn visa-nationality-btn" data-nationality="russia" onclick="filterVisasByNationality('russia')" style="padding: 8px 16px; border: 2px solid #d4af37; background: white; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">🇷🇺 Россия</button>
+                        <button class="visa-filter-btn visa-nationality-btn" data-nationality="kazakhstan" onclick="filterVisasByNationality('kazakhstan')" style="padding: 8px 16px; border: 2px solid #d4af37; background: white; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">🇰🇿 Казахстан</button>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span style="font-weight: 600; color: #333;">📅 Срок:</span>
+                        <button class="visa-filter-btn visa-days-btn active" data-days="all" onclick="filterVisasByDays('all')" style="padding: 8px 16px; border: 2px solid #00BCD4; background: #00BCD4; color: white; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600;">Все</button>
+                        <button class="visa-filter-btn visa-days-btn" data-days="45" onclick="filterVisasByDays('45')" style="padding: 8px 16px; border: 2px solid #00BCD4; background: white; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">45 дней</button>
+                        <button class="visa-filter-btn visa-days-btn" data-days="90" onclick="filterVisasByDays('90')" style="padding: 8px 16px; border: 2px solid #00BCD4; background: white; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">90 дней</button>
+                    </div>
+                </div>
             </div>
             <div class="listing-grid" id="visas-grid">
                 <div class="loading"><div class="spinner"></div></div>
@@ -4132,7 +4147,72 @@
             document.querySelectorAll('.visas-city-btn').forEach(btn => {
                 btn.style.border = btn.dataset.city === city ? '3px solid #d4af37' : '3px solid transparent';
             });
-            loadListings('visas', city);
+            applyVisasFilters();
+        }
+
+        let currentVisasNationality = 'all';
+        let currentVisasDays = 'all';
+
+        function filterVisasByNationality(nationality) {
+            currentVisasNationality = nationality;
+            document.querySelectorAll('.visa-nationality-btn').forEach(btn => {
+                if (btn.dataset.nationality === nationality) {
+                    btn.style.background = '#d4af37';
+                    btn.style.color = 'white';
+                    btn.style.fontWeight = '600';
+                } else {
+                    btn.style.background = 'white';
+                    btn.style.color = '#333';
+                    btn.style.fontWeight = 'normal';
+                }
+            });
+            applyVisasFilters();
+        }
+
+        function filterVisasByDays(days) {
+            currentVisasDays = days;
+            document.querySelectorAll('.visa-days-btn').forEach(btn => {
+                if (btn.dataset.days === days) {
+                    btn.style.background = '#00BCD4';
+                    btn.style.color = 'white';
+                    btn.style.fontWeight = '600';
+                } else {
+                    btn.style.background = 'white';
+                    btn.style.color = '#333';
+                    btn.style.fontWeight = 'normal';
+                }
+            });
+            applyVisasFilters();
+        }
+
+        function applyVisasFilters() {
+            let url = `/api/listings/visas?country=${currentCountry}`;
+            if (currentVisasCity && currentVisasCity !== 'all') {
+                url += `&city=${encodeURIComponent(currentVisasCity)}`;
+            }
+            if (currentVisasNationality && currentVisasNationality !== 'all') {
+                url += `&nationality=${currentVisasNationality}`;
+            }
+            if (currentVisasDays && currentVisasDays !== 'all') {
+                url += `&days=${currentVisasDays}`;
+            }
+            url += `&_t=${Date.now()}`;
+
+            const grid = document.getElementById('visas-grid');
+            grid.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            fetch(url)
+                .then(r => r.json())
+                .then(items => {
+                    if (items.length === 0) {
+                        grid.innerHTML = '<div style="text-align: center; padding: 40px; color: #888;">Нет объявлений</div>';
+                    } else {
+                        grid.innerHTML = items.map(item => renderListingCard(item, 'visas')).join('');
+                    }
+                })
+                .catch(err => {
+                    grid.innerHTML = '<div style="text-align: center; padding: 40px; color: #f44;">Ошибка загрузки</div>';
+                });
         }
         
         let currentKidsCategory = 'events';
