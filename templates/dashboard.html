@@ -1757,6 +1757,29 @@
                     </div>
                 </div>
 
+                <!-- Фильтры по городу -->
+                <div style="margin-bottom: 15px;">
+                    <div style="font-weight: 600; color: #333; margin-bottom: 8px; font-size: 14px;">🏙️ Город:</div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="kids-city-btn" data-city="" onclick="filterKidsCity('')" style="padding: 8px 16px; border: 2px solid #d4af37; background: #d4af37; color: white; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600;">Все</button>
+                        <button class="kids-city-btn" data-city="Nha Trang" onclick="filterKidsCity('Nha Trang')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">Нячанг</button>
+                        <button class="kids-city-btn" data-city="Da Nang" onclick="filterKidsCity('Da Nang')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">Дананг</button>
+                        <button class="kids-city-btn" data-city="Phu Quoc" onclick="filterKidsCity('Phu Quoc')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">Фукуок</button>
+                        <button class="kids-city-btn" data-city="Ho Chi Minh" onclick="filterKidsCity('Ho Chi Minh')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">Хошимин</button>
+                    </div>
+                </div>
+
+                <!-- Фильтры по возрасту -->
+                <div style="margin-bottom: 20px;">
+                    <div style="font-weight: 600; color: #333; margin-bottom: 8px; font-size: 14px;">👶 Возраст:</div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="kids-age-btn" data-age="" onclick="filterKidsAge('')" style="padding: 8px 16px; border: 2px solid #9C27B0; background: #9C27B0; color: white; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600;">Все</button>
+                        <button class="kids-age-btn" data-age="5" onclick="filterKidsAge('5')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">до 5 лет</button>
+                        <button class="kids-age-btn" data-age="9" onclick="filterKidsAge('9')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">до 9 лет</button>
+                        <button class="kids-age-btn" data-age="15" onclick="filterKidsAge('15')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">до 15 лет</button>
+                    </div>
+                </div>
+
                 <div id="kids-feed" style="max-height: 600px; overflow-y: auto;">
                     <div class="loading"><div class="spinner"></div></div>
                 </div>
@@ -2929,20 +2952,62 @@
         }
         
         let currentKidsCategory = 'events';
+        let currentKidsCity = '';
+        let currentKidsAge = '';
         
         function filterKidsCategory(type) {
             currentKidsCategory = type;
             document.querySelectorAll('.kids-category-btn').forEach(btn => {
                 btn.style.border = btn.dataset.type === type ? '3px solid #d4af37' : '3px solid transparent';
             });
-            loadKidsFeed(type);
+            loadKidsFeed();
         }
         
-        function loadKidsFeed(type) {
+        function filterKidsCity(city) {
+            currentKidsCity = city;
+            document.querySelectorAll('.kids-city-btn').forEach(btn => {
+                if (btn.dataset.city === city) {
+                    btn.style.background = '#d4af37';
+                    btn.style.color = 'white';
+                    btn.style.border = '2px solid #d4af37';
+                    btn.style.fontWeight = '600';
+                } else {
+                    btn.style.background = '#fff';
+                    btn.style.color = '#333';
+                    btn.style.border = '2px solid #ccc';
+                    btn.style.fontWeight = 'normal';
+                }
+            });
+            loadKidsFeed();
+        }
+        
+        function filterKidsAge(age) {
+            currentKidsAge = age;
+            document.querySelectorAll('.kids-age-btn').forEach(btn => {
+                if (btn.dataset.age === age) {
+                    btn.style.background = '#9C27B0';
+                    btn.style.color = 'white';
+                    btn.style.border = '2px solid #9C27B0';
+                    btn.style.fontWeight = '600';
+                } else {
+                    btn.style.background = '#fff';
+                    btn.style.color = '#333';
+                    btn.style.border = '2px solid #ccc';
+                    btn.style.fontWeight = 'normal';
+                }
+            });
+            loadKidsFeed();
+        }
+        
+        function loadKidsFeed() {
             const feed = document.getElementById('kids-feed');
             feed.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
             
-            fetch(`/api/listings/kids?country=${currentCountry}&kids_type=${type}&_t=${Date.now()}`)
+            let url = `/api/listings/kids?country=${currentCountry}&kids_type=${currentKidsCategory}&_t=${Date.now()}`;
+            if (currentKidsCity) url += `&city=${encodeURIComponent(currentKidsCity)}`;
+            if (currentKidsAge) url += `&max_age=${currentKidsAge}`;
+            
+            fetch(url)
                 .then(r => r.json())
                 .then(data => {
                     if (!data || data.length === 0) {

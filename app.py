@@ -432,6 +432,36 @@ def get_listings(category):
                     filtered = [x for x in filtered if any(kw in (x.get('description', '') + ' ' + x.get('title', '')).lower() for kw in keywords)]
             else:
                 filtered = filtered_by_field
+        
+        # Фильтр по городу для kids
+        if 'city' in filters and filters['city']:
+            city_filter = filters['city'].lower()
+            city_mapping = {
+                'nha trang': ['nha trang', 'nhatrang', 'нячанг'],
+                'da nang': ['da nang', 'danang', 'дананг'],
+                'phu quoc': ['phu quoc', 'phuquoc', 'фукуок'],
+                'ho chi minh': ['ho chi minh', 'hochiminh', 'hcm', 'хошимин', 'сайгон']
+            }
+            targets = city_mapping.get(city_filter, [city_filter])
+            filtered = [x for x in filtered if any(t in str(x.get('city', '')).lower() for t in targets)]
+        
+        # Фильтр по возрасту для kids
+        if 'max_age' in filters and filters['max_age']:
+            try:
+                max_age = int(filters['max_age'])
+                def check_age(item):
+                    age_str = str(item.get('age', ''))
+                    # Извлекаем числа из строки возраста
+                    import re
+                    numbers = re.findall(r'\d+', age_str)
+                    if numbers:
+                        # Берём минимальный возраст из диапазона
+                        min_item_age = min(int(n) for n in numbers)
+                        return min_item_age <= max_age
+                    return True  # Если возраст не указан, показываем
+                filtered = [x for x in filtered if check_age(x)]
+            except ValueError:
+                pass
     
     if category == 'transport':
         # Фильтр по типу (sale, rent)
