@@ -337,10 +337,19 @@ def save_ads_channels(country, data):
 
 @app.route('/api/ads-channels')
 def get_ads_channels():
-    """Получить список рекламных каналов"""
+    """Получить список одобренных рекламных каналов"""
     country = request.args.get('country', 'vietnam')
+    show_pending = request.args.get('pending', '') == '1'
     data = load_ads_channels(country)
-    return jsonify(data)
+    
+    if show_pending:
+        # Для админа - показать ожидающие модерации
+        pending = [ch for ch in data.get('channels', []) if not ch.get('approved', False)]
+        return jsonify({'channels': pending})
+    else:
+        # Для пользователей - только одобренные
+        approved = [ch for ch in data.get('channels', []) if ch.get('approved', False)]
+        return jsonify({'channels': approved})
 
 @app.route('/api/ads-channels/add', methods=['POST'])
 def add_ads_channel():
@@ -371,13 +380,48 @@ def add_ads_channel():
             'members': members,
             'price': price,
             'contact': contact,
-            'added': datetime.now().isoformat()
+            'added': datetime.now().isoformat(),
+            'approved': False
         }
         
         data['channels'].append(new_channel)
         save_ads_channels(country, data)
         
         return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/admin/ads-channels/approve', methods=['POST'])
+def approve_ads_channel():
+    """Одобрить или отклонить канал"""
+    try:
+        req = request.json
+        admin_key = req.get('password', '')
+        expected_key = os.environ.get('ADMIN_KEY', 'goldantelope2025')
+        
+        if admin_key != expected_key:
+            return jsonify({'success': False, 'error': 'Неверный пароль'})
+        
+        country = req.get('country', 'vietnam')
+        channel_id = req.get('channel_id', '')
+        action = req.get('action', 'approve')  # approve или reject
+        
+        data = load_ads_channels(country)
+        
+        if action == 'reject':
+            # Удаляем канал
+            data['channels'] = [ch for ch in data['channels'] if ch['id'] != channel_id]
+            save_ads_channels(country, data)
+            return jsonify({'success': True, 'message': 'Канал отклонён'})
+        else:
+            # Одобряем канал
+            for ch in data['channels']:
+                if ch['id'] == channel_id:
+                    ch['approved'] = True
+                    save_ads_channels(country, data)
+                    return jsonify({'success': True, 'message': 'Канал одобрен'})
+            
+            return jsonify({'success': False, 'error': 'Канал не найден'})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 

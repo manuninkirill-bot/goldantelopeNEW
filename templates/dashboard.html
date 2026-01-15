@@ -2434,6 +2434,14 @@
                         <div id="pending-count" style="font-size: 14px; color: #666; margin-bottom: 10px;"></div>
                         <div id="pending-list" style="display: grid; gap: 15px;"></div>
                     </div>
+                    
+                    <!-- Модерация рекламных каналов -->
+                    <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #ddd; margin-bottom: 20px;">
+                        <h3 style="margin: 0 0 15px 0; color: #333;">📢 Модерация рекламных каналов</h3>
+                        <button onclick="loadPendingAdsChannels()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-bottom: 15px;">🔄 Загрузить ожидающие</button>
+                        <div id="pending-ads-count" style="font-size: 14px; color: #666; margin-bottom: 10px;"></div>
+                        <div id="pending-ads-list" style="display: grid; gap: 10px;"></div>
+                    </div>
 
                     <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #ddd;">
                         <h3 style="margin: 0 0 15px 0; color: #333;">🗑️ Удалить объявление</h3>
@@ -3245,12 +3253,11 @@
                 });
                 const data = await r.json();
                 if (data.success) {
-                    status.innerHTML = '<span style="color: #4CAF50;">✅ Канал добавлен!</span>';
+                    status.innerHTML = '<span style="color: #4CAF50;">✅ Канал отправлен на модерацию!</span>';
                     document.getElementById('add-channel-name').value = '';
                     document.getElementById('add-channel-members').value = '';
                     document.getElementById('add-channel-price').value = '';
                     document.getElementById('add-channel-contact').value = '';
-                    loadAdsChannels();
                 } else {
                     status.innerHTML = `<span style="color: #dc3545;">${data.error}</span>`;
                 }
@@ -5126,6 +5133,72 @@
                     if (action === 'approve') {
                         loadListings('real_estate');
                     }
+                } else {
+                    alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
+                }
+            } catch (err) {
+                alert('Ошибка модерации');
+            }
+        }
+
+        async function loadPendingAdsChannels() {
+            try {
+                const response = await fetch(`/api/ads-channels?country=${currentCountry}&pending=1`);
+                const data = await response.json();
+                
+                const countEl = document.getElementById('pending-ads-count');
+                const listEl = document.getElementById('pending-ads-list');
+                
+                countEl.textContent = `📢 Ожидают модерации: ${data.channels.length}`;
+                
+                if (data.channels.length === 0) {
+                    listEl.innerHTML = '<p style="color: #666;">Нет каналов на модерацию</p>';
+                    return;
+                }
+                
+                const categoryNames = {
+                    'chat': '💬 Чат', 'visas': '🏖️ Визы', 'realestate': '🏠 Недвижимость',
+                    'transport': '🏍️ Транспорт', 'exchange': '💱 Обмен', 'marketplace': '🛍️ Барахолка',
+                    'restaurants': '🍽️ Рестораны', 'tours': '🧳 Экскурсии', 'entertainment': '🎮 Развлечения',
+                    'medicine': '🏥 Медицина', 'news': '📰 Новости'
+                };
+                
+                listEl.innerHTML = data.channels.map(ch => `
+                    <div style="background: #f9f9f9; border-radius: 8px; padding: 15px; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <div style="font-weight: 600; font-size: 15px;">${ch.name}</div>
+                            <div style="font-size: 13px; color: #666;">${categoryNames[ch.category] || ch.category} | ${ch.members.toLocaleString()} подписчиков | $${ch.price}</div>
+                            <div style="font-size: 12px; color: #888;">Контакт: ${ch.contact}</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="moderateAdsChannel('${ch.id}', 'approve')" style="padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">✅ Одобрить</button>
+                            <button onclick="moderateAdsChannel('${ch.id}', 'reject')" style="padding: 8px 16px; background: #ff6b6b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">❌ Отклонить</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                document.getElementById('pending-ads-count').textContent = '❌ Ошибка загрузки';
+            }
+        }
+        
+        async function moderateAdsChannel(channelId, action) {
+            try {
+                const response = await fetch('/api/admin/ads-channels/approve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        password: adminPassword_val,
+                        country: currentCountry,
+                        channel_id: channelId,
+                        action: action
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(data.message);
+                    loadPendingAdsChannels();
+                    loadAdsChannels();
                 } else {
                     alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
                 }
