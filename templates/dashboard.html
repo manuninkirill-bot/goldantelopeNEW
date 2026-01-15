@@ -2907,6 +2907,18 @@
         }, 10000);
 
         function switchCountry(country) {
+            // Если админ авторизован, он может работать только со своей страной
+            if (adminAuthenticated && adminCountry && country !== adminCountry) {
+                const countryNames = {
+                    'vietnam': '🇻🇳 Вьетнам',
+                    'thailand': '🇹🇭 Таиланд',
+                    'india': '🇮🇳 Индия',
+                    'indonesia': '🇮🇩 Индонезия'
+                };
+                alert('Вы авторизованы как админ ' + countryNames[adminCountry] + '. Для работы с другой страной выйдите и войдите с другим паролем.');
+                return;
+            }
+            
             currentCountry = country;
             document.querySelectorAll('.country-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.getAttribute('onclick').includes(country));
@@ -4483,6 +4495,7 @@
 
         let adminAuthenticated = false;
         let adminPassword_val = '';
+        let adminCountry = null;
         const adminPassword = document.getElementById('admin-password');
         const adminStatus = document.getElementById('admin-status');
         const adminTools = document.getElementById('admin-tools');
@@ -5718,11 +5731,26 @@
                 if (data.authenticated) {
                     adminAuthenticated = true;
                     adminPassword_val = password;
-                    adminStatus.textContent = '✅ Авторизован';
+                    adminCountry = data.country;
+                    
+                    const countryNames = {
+                        'vietnam': '🇻🇳 Вьетнам',
+                        'thailand': '🇹🇭 Таиланд',
+                        'india': '🇮🇳 Индия',
+                        'indonesia': '🇮🇩 Индонезия'
+                    };
+                    
+                    adminStatus.textContent = '✅ Авторизован: ' + countryNames[adminCountry];
                     adminStatus.style.color = '#31a24c';
                     adminTools.style.display = 'block';
                     adminPassword.disabled = true;
                     document.querySelector('button[onclick="adminAuth()"]').disabled = true;
+                    
+                    // Переключаем на страну админа
+                    if (adminCountry && currentCountry !== adminCountry) {
+                        switchCountry(adminCountry);
+                    }
+                    
                     renderAdminBanners();
                     loadChannelsAdmin();
                     loadBlacklist();

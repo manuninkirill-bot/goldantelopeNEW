@@ -880,13 +880,31 @@ def admin_reorder_banners():
         return jsonify({'success': True})
     return jsonify({'error': 'Country not found'}), 404
 
+ADMIN_PASSWORDS = {
+    'vietnam': 'BB888888!',
+    'thailand': 'OO888888!',
+    'india': 'GG666666!',
+    'indonesia': 'XX111111!'
+}
+
+def check_admin_password(password, country=None):
+    """Check if password is valid for the given country or any country"""
+    if country and country in ADMIN_PASSWORDS:
+        return password == ADMIN_PASSWORDS[country], country
+    for c, pwd in ADMIN_PASSWORDS.items():
+        if password == pwd:
+            return True, c
+    return False, None
+
 @app.route('/api/admin/auth', methods=['POST'])
 def admin_auth():
     password = request.json.get('password', '')
-    admin_key = os.environ.get('ADMIN_KEY', '29Sept1982!')
+    country = request.json.get('country')
     
-    if password == admin_key:
-        return jsonify({'success': True, 'authenticated': True})
+    is_valid, admin_country = check_admin_password(password, country)
+    
+    if is_valid:
+        return jsonify({'success': True, 'authenticated': True, 'country': admin_country})
     return jsonify({'success': False, 'error': 'Invalid password'}), 401
 
 @app.route('/api/admin/delete-listing', methods=['POST'])
