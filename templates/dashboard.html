@@ -2004,12 +2004,7 @@
                 <!-- Фильтры по городу -->
                 <div style="margin-bottom: 15px;">
                     <div style="font-weight: 600; color: #333; margin-bottom: 8px; font-size: 14px;">🏙️ Город:</div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button class="kids-city-btn" data-city="" onclick="filterKidsCity('')" style="padding: 8px 16px; border: 2px solid #d4af37; background: #d4af37; color: white; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600;">Все</button>
-                        <button class="kids-city-btn" data-city="Nha Trang" onclick="filterKidsCity('Nha Trang')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">Нячанг</button>
-                        <button class="kids-city-btn" data-city="Da Nang" onclick="filterKidsCity('Da Nang')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">Дананг</button>
-                        <button class="kids-city-btn" data-city="Phu Quoc" onclick="filterKidsCity('Phu Quoc')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">Фукуок</button>
-                        <button class="kids-city-btn" data-city="Ho Chi Minh" onclick="filterKidsCity('Ho Chi Minh')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">Хошимин</button>
+                    <div id="kids-city-filter" style="display: flex; gap: 8px; flex-wrap: wrap;">
                     </div>
                 </div>
 
@@ -2947,6 +2942,10 @@
                 renderDynamicCityButtons();
             }
             
+            // Обновляем фильтр городов для детей
+            renderKidsCityFilter();
+            updateKidsCitySelect();
+            
             // Обновляем города в формах подачи объявлений
             updateFormCities();
 
@@ -3591,6 +3590,33 @@
                 `;
                 container.innerHTML = html;
             });
+        }
+        
+        function renderKidsCityFilter() {
+            const container = document.getElementById('kids-city-filter');
+            if (!container) return;
+            
+            const cities = formCitiesByCountry[currentCountry] || [];
+            
+            let html = `<button class="kids-city-btn" data-city="" onclick="filterKidsCity('')" style="padding: 8px 16px; border: 2px solid #d4af37; background: #d4af37; color: white; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600;">Все</button>`;
+            
+            cities.forEach(city => {
+                html += `<button class="kids-city-btn" data-city="${city.value}" onclick="filterKidsCity('${city.value}')" style="padding: 8px 16px; border: 2px solid #ccc; background: #fff; color: #333; border-radius: 20px; cursor: pointer; font-size: 13px;">${city.label}</button>`;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function updateKidsCitySelect() {
+            const select = document.getElementById('kids-city');
+            if (!select) return;
+            
+            const cities = formCitiesByCountry[currentCountry] || [];
+            let html = '';
+            cities.forEach(city => {
+                html += `<option value="${city.value}">${city.label}</option>`;
+            });
+            select.innerHTML = html;
         }
         
         function renderAdsCityFilter() {
@@ -4433,6 +4459,8 @@
         // Инициализируем баннер, статистику и курсы при открытии
         loadBanners();
         updateAllCityCounts();
+        renderKidsCityFilter();
+        updateKidsCitySelect();
         
         updateRates();
         loadStats();
