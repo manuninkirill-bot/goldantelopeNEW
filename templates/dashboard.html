@@ -902,18 +902,8 @@
             <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px;">
                 <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">📋 Доступные группы для рекламы</h3>
                 
-                <!-- Фильтр по городам -->
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
-                    <button class="ads-city-btn" data-city="" onclick="filterAdsByCity('')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #667eea; color: white; cursor: pointer; font-size: 13px; font-weight: 500;">Все города</button>
-                    <button class="ads-city-btn" data-city="Нячанг" onclick="filterAdsByCity('Нячанг')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Нячанг</button>
-                    <button class="ads-city-btn" data-city="Хошимин" onclick="filterAdsByCity('Хошимин')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Хошимин</button>
-                    <button class="ads-city-btn" data-city="Дананг" onclick="filterAdsByCity('Дананг')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Дананг</button>
-                    <button class="ads-city-btn" data-city="Ханой" onclick="filterAdsByCity('Ханой')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Ханой</button>
-                    <button class="ads-city-btn" data-city="Бангкок" onclick="filterAdsByCity('Бангкок')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Бангкок</button>
-                    <button class="ads-city-btn" data-city="Паттайя" onclick="filterAdsByCity('Паттайя')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Паттайя</button>
-                    <button class="ads-city-btn" data-city="Пхукет" onclick="filterAdsByCity('Пхукет')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Пхукет</button>
-                    <button class="ads-city-btn" data-city="Бали" onclick="filterAdsByCity('Бали')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Бали</button>
-                    <button class="ads-city-btn" data-city="Гоа" onclick="filterAdsByCity('Гоа')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: #fff; color: #333; cursor: pointer; font-size: 13px;">Гоа</button>
+                <!-- Фильтр по городам (динамический для каждой страны) -->
+                <div id="ads-city-filter" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
                 </div>
                 
                 <div style="overflow-x: auto;">
@@ -960,20 +950,7 @@
                     <div>
                         <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Город *</label>
                         <select id="add-channel-city" required style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
-                            <option value="Нячанг">Нячанг</option>
-                            <option value="Хошимин">Хошимин</option>
-                            <option value="Дананг">Дананг</option>
-                            <option value="Ханой">Ханой</option>
-                            <option value="Фукуок">Фукуок</option>
-                            <option value="Фантьет">Фантьет</option>
-                            <option value="Муйне">Муйне</option>
-                            <option value="Далат">Далат</option>
-                            <option value="Бангкок">Бангкок</option>
-                            <option value="Паттайя">Паттайя</option>
-                            <option value="Пхукет">Пхукет</option>
-                            <option value="Бали">Бали</option>
-                            <option value="Гоа">Гоа</option>
-                            <option value="other">Другой</option>
+                            <!-- Города загружаются динамически -->
                         </select>
                     </div>
                     <div>
@@ -3271,6 +3248,40 @@
         
         let currentAdsCity = '';
         
+        const adsCitiesByCountry = {
+            'vietnam': ['Нячанг', 'Хошимин', 'Дананг', 'Ханой', 'Фукуок', 'Фантьет', 'Муйне', 'Далат'],
+            'thailand': ['Бангкок', 'Паттайя', 'Пхукет', 'Самуи', 'Чиангмай'],
+            'indonesia': ['Бали', 'Джакарта', 'Ломбок'],
+            'india': ['Гоа', 'Дели', 'Мумбаи']
+        };
+        
+        function renderAdsCityFilter() {
+            const container = document.getElementById('ads-city-filter');
+            const cities = adsCitiesByCountry[currentCountry] || [];
+            
+            let html = `<button class="ads-city-btn" data-city="" onclick="filterAdsByCity('')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: ${currentAdsCity === '' ? '#667eea' : '#fff'}; color: ${currentAdsCity === '' ? 'white' : '#333'}; cursor: pointer; font-size: 13px; font-weight: 500;">Все города</button>`;
+            
+            for (const city of cities) {
+                const isActive = currentAdsCity === city;
+                html += `<button class="ads-city-btn" data-city="${city}" onclick="filterAdsByCity('${city}')" style="padding: 8px 16px; border: 2px solid #667eea; border-radius: 20px; background: ${isActive ? '#667eea' : '#fff'}; color: ${isActive ? 'white' : '#333'}; cursor: pointer; font-size: 13px;">${city}</button>`;
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        function updateAdsCitySelect() {
+            const select = document.getElementById('add-channel-city');
+            if (!select) return;
+            const cities = adsCitiesByCountry[currentCountry] || [];
+            
+            let html = '';
+            for (const city of cities) {
+                html += `<option value="${city}">${city}</option>`;
+            }
+            html += '<option value="other">Другой</option>';
+            select.innerHTML = html;
+        }
+        
         function filterAdsByCity(city) {
             currentAdsCity = city;
             document.querySelectorAll('.ads-city-btn').forEach(btn => {
@@ -3316,6 +3327,9 @@
         }
         
         function loadGroupsStats() {
+            currentAdsCity = '';
+            renderAdsCityFilter();
+            updateAdsCitySelect();
             loadAdsChannels();
         }
 
