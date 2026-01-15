@@ -3262,15 +3262,16 @@
                             <div class="card-slider" id="slider-${item.id}" style="position:relative; height: 250px;">
                                 <div style="position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:4px;z-index:10;">
                                     ${category === 'restaurants' 
-                                        ? `<span style="background:#FF5722;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">${restTypeBadge}</span>`
+                                        ? `<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+                                            <span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">${restTypeBadge}</span>
+                                            ${item.city ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">📍 ${getCityRu(item.city)}</span>` : ''}
+                                            ${priceCatBadge ? `<span style="font-size:18px;text-shadow:0 1px 3px rgba(0,0,0,0.5);">${priceCatBadge}</span>` : ''}
+                                        </div>
+                                        ${item.google_rating ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">⭐⭐⭐⭐⭐ ${item.google_rating}</span>` : ''}`
                                         : (category === 'real_estate' || category === 'realestate' 
                                             ? (item.listing_type === 'rent' ? '<span style="background:#2196F3;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🔑 Аренда</span>' : '<span style="background:#4CAF50;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🏠 Продажа</span>')
                                             : '')
                                     }
-                                    ${category === 'restaurants' && cuisineType ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">${cuisineType}</span>` : ''}
-                                    ${category === 'restaurants' && item.city ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">📍 ${getCityRu(item.city)}</span>` : ''}
-                                    ${category === 'restaurants' && priceCatBadge ? `<span style="font-size:18px;text-shadow:0 1px 3px rgba(0,0,0,0.5);">${priceCatBadge}</span>` : ''}
-                                    ${category === 'restaurants' && item.google_rating ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">⭐⭐⭐⭐⭐ ${item.google_rating}</span>` : ''}
                                     ${category !== 'restaurants' && item.area ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">📐 ${item.area}m²</span>` : ''}
                                     ${category !== 'restaurants' && item.rooms ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🛏 ${item.rooms} комн.</span>` : ''}
                                 </div>
