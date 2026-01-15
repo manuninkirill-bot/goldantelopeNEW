@@ -88,33 +88,37 @@ def create_empty_data():
         "money_exchange": [],
         "entertainment": [],
         "marketplace": [],
+        "photoshoot": [],
         "visas": [],
-        "news": [],
         "medicine": [],
         "kids": [],
         "chat": []
     }
 
-def load_data(country='vietnam'):
+def load_data(country="vietnam"):
     country_file = f"listings_{country}.json"
     if os.path.exists(country_file):
-        with open(country_file, 'r', encoding='utf-8') as f:
+        with open(country_file, "r", encoding="utf-8") as f:
             data = json.load(f)
             if isinstance(data, dict):
+                # Backwards compatibility: rename news to photoshoot if it exists
+                if "news" in data:
+                    data["photoshoot"] = data.pop("news")
                 return data
             
             # Если данные в файле - список, распределяем по категориям
             result = create_empty_data()
             category_map = {
-                'bikes': 'transport',
-                'real_estate': 'real_estate',
-                'exchange': 'money_exchange',
-                'money_exchange': 'money_exchange',
-                'food': 'restaurants'
+                "bikes": "transport",
+                "real_estate": "real_estate",
+                "exchange": "money_exchange",
+                "money_exchange": "money_exchange",
+                "food": "restaurants",
+                "news": "photoshoot"
             }
             for item in data:
                 if not isinstance(item, dict): continue
-                cat = item.get('category', 'chat')
+                cat = item.get("category", "chat")
                 mapped_cat = category_map.get(cat, cat)
                 if mapped_cat in result:
                     result[mapped_cat].append(item)
@@ -301,12 +305,13 @@ def groups_stats():
         'Рестораны': 'restaurants',
         'Для детей': 'entertainment',
         'Барахолка': 'marketplace',
-        'Новости': 'news',
+        'Новости': 'photoshoot',
         'Визаран': 'visas',
         'Экскурсии': 'tours',
         'Обмен денег': 'money_exchange',
         'Транспорт': 'transport',
-        'Медицина': 'medicine'
+        'Медицина': 'medicine',
+        'Фотосессия': 'photoshoot'
     }
     
     for cat_name, cat_key in cat_key_map.items():
@@ -389,8 +394,8 @@ def get_listings(category):
         'Хойан': 'Hoi An'
     }
     
-    # Универсальный фильтр по городу для категорий, где он есть (restaurants, tours, entertainment)
-    if category in ['restaurants', 'tours', 'entertainment']:
+    # Универсальный фильтр по городу для категорий, где он есть (restaurants, tours, entertainment, visas, photoshoot)
+    if category in ['restaurants', 'tours', 'entertainment', 'visas', 'photoshoot']:
         if 'city' in filters and filters['city']:
             city_filter = filters['city']
             # Поиск по русскому названию напрямую (данные теперь на русском)
@@ -404,7 +409,8 @@ def get_listings(category):
             if city_filter.lower() in ['хошимин', 'сайгон'] or city_en.lower() == 'saigon':
                 targets.extend(['saigon', 'ho chi minh', 'hochiminh', 'хошимин', 'сайгон'])
             
-            filtered = [x for x in filtered if str(x.get('city', '')).lower() in targets or str(x.get('location', '')).lower() in targets]
+            # Также проверяем наличие города в описании для Visas и Photoshoot если нет поля city
+            filtered = [x for x in filtered if str(x.get('city', '')).lower() in targets or str(x.get('location', '')).lower() in targets or (category in ['visas', 'photoshoot'] and any(t in x.get('description', '').lower() for t in targets))]
             print(f"DEBUG: Category {category}, City Filter {city_filter}, Targets {targets}, Found {len(filtered)} items")
     
     # Фильтр по типу для категории "kids" (Для детей)
