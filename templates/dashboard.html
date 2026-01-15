@@ -4877,6 +4877,24 @@
         updateKidsCitySelect();
         updateFormCurrency();
         
+        // Показываем кнопки городов для Вьетнама при первой загрузке
+        if (document.getElementById('vietnam-restaurants-buttons'))
+            document.getElementById('vietnam-restaurants-buttons').style.display = 'block';
+        if (document.getElementById('vietnam-tours-buttons'))
+            document.getElementById('vietnam-tours-buttons').style.display = 'block';
+        if (document.getElementById('vietnam-entertainment-buttons'))
+            document.getElementById('vietnam-entertainment-buttons').style.display = 'block';
+        if (document.getElementById('vietnam-transport-buttons'))
+            document.getElementById('vietnam-transport-buttons').style.display = 'block';
+        if (document.getElementById('vietnam-realestate-buttons'))
+            document.getElementById('vietnam-realestate-buttons').style.display = 'block';
+        if (document.getElementById('vietnam-visas-buttons'))
+            document.getElementById('vietnam-visas-buttons').style.display = 'block';
+        if (document.getElementById('vietnam-news-buttons'))
+            document.getElementById('vietnam-news-buttons').style.display = 'block';
+        if (document.getElementById('vietnam-medicine-buttons'))
+            document.getElementById('vietnam-medicine-buttons').style.display = 'block';
+        
         updateRates();
         loadStats();
         setInterval(updateRates, 60000);
