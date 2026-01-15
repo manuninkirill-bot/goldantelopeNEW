@@ -3284,6 +3284,7 @@
                                                             <span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">${item.listing_type === 'rent' ? '🔑 Аренда' : '🏠 Продажа'}</span>
                                                             ${item.area ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">📐 ${item.area}m²</span>` : ''}
                                                             ${item.rooms ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">🛏 ${item.rooms} комн.</span>` : ''}
+                                                            ${item.price ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">💰 ${Number(item.price).toLocaleString('vi-VN')} VND</span>` : ''}
                                                         </div>`
                                                         : ''))))
                                     }
