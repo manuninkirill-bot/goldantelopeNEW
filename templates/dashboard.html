@@ -6,6 +6,30 @@
     <title>Goldantelope ASIA</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* Скрываем "Файл не выбран" для file input */
+        input[type="file"] {
+            color: transparent;
+        }
+        input[type="file"]::-webkit-file-upload-button {
+            visibility: visible;
+            background: #d4af37;
+            color: #333;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        input[type="file"]::file-selector-button {
+            background: #d4af37;
+            color: #333;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
             background: #ffffff;
@@ -1163,6 +1187,12 @@
                     </div>
 
                     <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📍 Геолокация Google Maps</label>
+                        <input type="text" id="tour-geolocation" placeholder="https://maps.google.com/..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                        <small style="color: #888; font-size: 11px;">Скопируйте ссылку из Google Maps</small>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
                         <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📷 Фото (до 4 шт, макс 1 МБ каждое)</label>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                             <input type="file" id="tour-photo-0" accept="image/*" style="font-size: 12px;">
@@ -1320,6 +1350,12 @@
                             <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #0088cc;">✈️ Telegram</label>
                             <input type="text" id="transport-telegram" placeholder="@username" style="width: 100%; padding: 12px; border: 1px solid #0088cc; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
                         </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📍 Геолокация Google Maps</label>
+                        <input type="text" id="transport-geolocation" placeholder="https://maps.google.com/..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                        <small style="color: #888; font-size: 11px;">Скопируйте ссылку из Google Maps</small>
                     </div>
 
                     <div style="margin-bottom: 15px;">
@@ -1579,6 +1615,12 @@
                                 <input type="radio" name="entertainment-capacity" value="300"> до 300
                             </label>
                         </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📍 Геолокация Google Maps</label>
+                        <input type="text" id="entertainment-geolocation" placeholder="https://maps.google.com/..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                        <small style="color: #888; font-size: 11px;">Скопируйте ссылку из Google Maps</small>
                     </div>
 
                     <div style="margin-bottom: 15px;">
@@ -1980,6 +2022,12 @@
                     </div>
 
                     <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📍 Геолокация Google Maps</label>
+                        <input type="text" id="submit-geolocation" placeholder="https://maps.google.com/..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                        <small style="color: #888; font-size: 11px;">Скопируйте ссылку из Google Maps</small>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
                         <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📷 Фото (до 4 шт, макс 1 МБ каждое)</label>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                             <input type="file" id="submit-photo-0" accept="image/*" style="font-size: 12px;">
@@ -2103,6 +2151,12 @@
                                 <input type="radio" name="restaurant-price-category" value="expensive"> 💵💵💵 Дорого
                             </label>
                         </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📍 Геолокация Google Maps</label>
+                        <input type="text" id="restaurant-geolocation" placeholder="https://maps.google.com/..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                        <small style="color: #888; font-size: 11px;">Скопируйте ссылку из Google Maps</small>
                     </div>
 
                     <div style="margin-bottom: 15px;">
