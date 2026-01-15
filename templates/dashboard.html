@@ -1619,9 +1619,27 @@
         </div>
 
         <!-- Визаран -->
-        <div id="visas" class="content">
-            <div class="listing-grid" id="visas-grid">
-                <div class="loading"><div class="spinner"></div></div>
+                <div id="visas" class="content">
+            <div class="tour-grid-container" id="tour-grid-visas" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 20px;">
+                <div class="tour-city-btn" onclick="filterByCity("visas", "Cambodia")" style="cursor: pointer; border-radius: 12px; overflow: hidden; border: 6px solid #d4af37; transition: transform 0.3s ease; aspect-ratio: 16/10; position: relative;">
+                    <img src="/static/images/cambodia_visaran.jpg" alt="Камбоджа" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; padding: 10px; text-align: center;">
+                        <div class="city-name" style="font-size: 18px; font-weight: bold;">Камбоджа</div>
+                        <div class="tour-count" style="font-size: 14px; opacity: 0.9;">Визаран</div>
+                    </div>
+                </div>
+                <div class="tour-city-btn" onclick="filterByCity("visas", "Laos")" style="cursor: pointer; border-radius: 12px; overflow: hidden; border: 6px solid #d4af37; transition: transform 0.3s ease; aspect-ratio: 16/10; position: relative;">
+                    <img src="/static/images/laos_visaran.jpg" alt="Лаос" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; padding: 10px; text-align: center;">
+                        <div class="city-name" style="font-size: 18px; font-weight: bold;">Лаос</div>
+                        <div class="tour-count" style="font-size: 14px; opacity: 0.9;">Визаран</div>
+                    </div>
+                </div>
+            </div>
+            <div class="listing-grid" id="listing-grid-visas"></div>
+            <div class="loading" id="loading-visas"><div class="spinner"></div></div>
+            <div class="empty" id="empty-visas" style="display: none;">Объявлений не найдено</div>
+        </div>
             </div>
         </div>
 
