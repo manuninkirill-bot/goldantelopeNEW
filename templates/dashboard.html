@@ -974,79 +974,8 @@
 
         <!-- Рестораны -->
         <div id="restaurants" class="content">
-            <div id="vietnam-restaurants-buttons" style="display: none; padding: 20px;">
-                <div class="tour-grid-container" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px;">
-                    <div class="tour-city-btn restaurant-city-btn" data-city="Нячанг" onclick="filterRestaurantsByCity('Нячанг')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #d4af37;">
-                        <img src="/static/images/restaurants/nyachang.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Нячанг</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">106 ресторанов</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn restaurant-city-btn" data-city="Хошимин" onclick="filterRestaurantsByCity('Хошимин')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/restaurants/hochiminh.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Хошимин</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">74 ресторана</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn restaurant-city-btn" data-city="Дананг" onclick="filterRestaurantsByCity('Дананг')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/restaurants/danang.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Дананг</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">95 ресторанов</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn restaurant-city-btn" data-city="Ханой" onclick="filterRestaurantsByCity('Ханой')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/restaurants/hanoi.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Ханой</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">3 ресторана</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn restaurant-city-btn" data-city="Фукуок" onclick="filterRestaurantsByCity('Фукуок')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/restaurants/phuquoc.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Фукуок</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">3 ресторана</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn restaurant-city-btn" data-city="Фантьет" onclick="filterRestaurantsByCity('Фантьет')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/restaurants/phanthiet.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Фантьет</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">3 ресторана</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn restaurant-city-btn" data-city="Камрань" onclick="filterRestaurantsByCity('Камрань')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/restaurants/kamran.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Камрань</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">3 ресторана</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn restaurant-city-btn" data-city="Далат" onclick="filterRestaurantsByCity('Далат')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/restaurants/dalat.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Далат</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">3 ресторана</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn restaurant-city-btn" data-city="Хойан" onclick="filterRestaurantsByCity('Хойан')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/restaurants/hoian.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Хойан</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">3 ресторана</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn" onclick="switchTab('submit-restaurant'); loadRestaurantCaptcha();" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #4CAF50;">
-                        <img src="/static/images/submit_listing.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 18px;">📝 Подать</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #4CAF50;">Добавить ресторан</div>
-                        </div>
-                    </div>
-                </div>
+            <div id="restaurants-city-buttons" style="padding: 20px;">
+                <!-- Города генерируются динамически -->
             </div>
             <div class="filters" style="display: flex; gap: 10px; padding: 15px; flex-wrap: wrap;">
                 <button onclick="searchNearby5km()" class="nearby-btn" style="padding: 10px 20px; background: #4285F4; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">📍 Искать в радиусе 5 км</button>
@@ -1067,79 +996,8 @@
 
         <!-- Экскурсии -->
         <div id="tours" class="content">
-            <div id="vietnam-tours-buttons" style="padding: 20px;">
-                <div class="tour-grid-container" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px;">
-                    <div class="tour-city-btn tours-city-btn" data-city="Нячанг" onclick="filterToursByCity('Нячанг')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #d4af37;">
-                        <img src="/static/images/tours/nyachang.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Нячанг</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">58 экскурсий</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn tours-city-btn" data-city="Хошимин" onclick="filterToursByCity('Хошимин')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/tours/hochiminh.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Хошимин</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">33 экскурсии</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn tours-city-btn" data-city="Ханой" onclick="filterToursByCity('Ханой')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/tours/hanoi.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Ханой</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">15 экскурсий</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn tours-city-btn" data-city="Фукуок" onclick="filterToursByCity('Фукуок')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/tours/phuquoc.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Фукуок</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">27 экскурсий</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn tours-city-btn" data-city="Фантьет" onclick="filterToursByCity('Фантьет')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/tours/phanthiet.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Фантьет</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">15 экскурсий</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn tours-city-btn" data-city="Муйне" onclick="filterToursByCity('Муйне')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/tours/muine.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Муйне</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">6 экскурсий</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn tours-city-btn" data-city="Дананг" onclick="filterToursByCity('Дананг')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/tours/danang.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Дананг</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">16 экскурсий</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn tours-city-btn" data-city="Камрань" onclick="filterToursByCity('Камрань')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/tours/kamran.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Камрань</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">2 экскурсии</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn tours-city-btn" data-city="Далат" onclick="filterToursByCity('Далат')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
-                        <img src="/static/images/tours/dalat.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Далат</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">2 экскурсии</div>
-                        </div>
-                    </div>
-                    <div class="tour-city-btn" onclick="switchTab('submit-tour'); loadTourCaptcha();" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #4CAF50;">
-                        <img src="/static/images/submit_listing.jpg" style="width: 100%; height: 100%; object-fit: cover;">
-                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
-                            <div class="city-name" style="font-weight: bold; font-size: 18px;">📝 Подать</div>
-                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #4CAF50;">Добавить экскурсию</div>
-                        </div>
-                    </div>
-                </div>
+            <div id="tours-city-buttons" style="padding: 20px;">
+                <!-- Города генерируются динамически -->
             </div>
             <div class="listing-grid" id="tours-grid">
                 <div class="loading"><div class="spinner"></div></div>
@@ -3248,12 +3106,53 @@
         
         let currentAdsCity = '';
         
-        const adsCitiesByCountry = {
-            'vietnam': ['Нячанг', 'Хошимин', 'Дананг', 'Ханой', 'Фукуок', 'Фантьет', 'Муйне', 'Далат'],
-            'thailand': ['Бангкок', 'Паттайя', 'Пхукет', 'Самуи', 'Чиангмай'],
-            'indonesia': ['Бали', 'Джакарта', 'Ломбок'],
-            'india': ['Гоа', 'Дели', 'Мумбаи']
+        const citiesByCountry = {
+            'vietnam': ['Нячанг', 'Хошимин', 'Дананг', 'Ханой', 'Фукуок', 'Фантьет', 'Муйне', 'Далат', 'Камрань'],
+            'thailand': ['Бангкок', 'Пхукет', 'Чиангмай', 'Паттайя', 'Самуи', 'Хуахин', 'Краби', 'Чианграй', 'Удон Тхани'],
+            'indonesia': ['Джакарта', 'Бали', 'Сурабая', 'Бандунг', 'Медан', 'Семаранг', 'Денпасар', 'Макасар', 'Джокьякарта'],
+            'india': ['Мумбаи', 'Дели', 'Бангалор', 'Хайдарабад', 'Ченнаи', 'Пуна', 'Колката', 'Ахмедабад', 'Джайпур']
         };
+        
+        const cityImages = {
+            'Нячанг': 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=300&h=200&fit=crop',
+            'Хошимин': 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=300&h=200&fit=crop',
+            'Дананг': 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=300&h=200&fit=crop',
+            'Ханой': 'https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?w=300&h=200&fit=crop',
+            'Фукуок': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=200&fit=crop',
+            'Фантьет': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop',
+            'Муйне': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=200&fit=crop',
+            'Далат': 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=300&h=200&fit=crop',
+            'Камрань': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=200&fit=crop',
+            'Бангкок': 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=300&h=200&fit=crop',
+            'Пхукет': 'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?w=300&h=200&fit=crop',
+            'Чиангмай': 'https://images.unsplash.com/photo-1598935898639-81629b1c8a80?w=300&h=200&fit=crop',
+            'Паттайя': 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=300&h=200&fit=crop',
+            'Самуи': 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=300&h=200&fit=crop',
+            'Хуахин': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop',
+            'Краби': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop',
+            'Чианграй': 'https://images.unsplash.com/photo-1598935898639-81629b1c8a80?w=300&h=200&fit=crop',
+            'Удон Тхани': 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=300&h=200&fit=crop',
+            'Джакарта': 'https://images.unsplash.com/photo-1555899434-94d1368aa7af?w=300&h=200&fit=crop',
+            'Бали': 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=300&h=200&fit=crop',
+            'Сурабая': 'https://images.unsplash.com/photo-1555899434-94d1368aa7af?w=300&h=200&fit=crop',
+            'Бандунг': 'https://images.unsplash.com/photo-1555899434-94d1368aa7af?w=300&h=200&fit=crop',
+            'Медан': 'https://images.unsplash.com/photo-1555899434-94d1368aa7af?w=300&h=200&fit=crop',
+            'Семаранг': 'https://images.unsplash.com/photo-1555899434-94d1368aa7af?w=300&h=200&fit=crop',
+            'Денпасар': 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=300&h=200&fit=crop',
+            'Макасар': 'https://images.unsplash.com/photo-1555899434-94d1368aa7af?w=300&h=200&fit=crop',
+            'Джокьякарта': 'https://images.unsplash.com/photo-1584810359583-96fc3448beaa?w=300&h=200&fit=crop',
+            'Мумбаи': 'https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=300&h=200&fit=crop',
+            'Дели': 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=300&h=200&fit=crop',
+            'Бангалор': 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=300&h=200&fit=crop',
+            'Хайдарабад': 'https://images.unsplash.com/photo-1572445271230-a78b4b5b3791?w=300&h=200&fit=crop',
+            'Ченнаи': 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=300&h=200&fit=crop',
+            'Пуна': 'https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=300&h=200&fit=crop',
+            'Колката': 'https://images.unsplash.com/photo-1558431382-27e303142255?w=300&h=200&fit=crop',
+            'Ахмедабад': 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=300&h=200&fit=crop',
+            'Джайпур': 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=300&h=200&fit=crop'
+        };
+        
+        const adsCitiesByCountry = citiesByCountry;
         
         function renderAdsCityFilter() {
             const container = document.getElementById('ads-city-filter');
