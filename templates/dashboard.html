@@ -3350,7 +3350,7 @@
                                         </div>
                                         <div style="background: #fff3e0; padding: 8px; border-radius: 6px; text-align: center;">
                                             <div style="font-size: 11px; color: #888;">👤 Контакт</div>
-                                            <div style="font-size: 12px; font-weight: 600; color: #e65100;">${item.contact_name || 'gohomenhatrang'}</div>
+                                            <div style="font-size: 12px; font-weight: 600; color: #e65100;">${item.contact_name || '-'}</div>
                                         </div>
                                     </div>
                                     <!-- Цена -->
@@ -3359,12 +3359,16 @@
                                     </div>` : ''}
                                     <!-- WhatsApp и Telegram кнопки -->
                                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
-                                        <a href="https://api.whatsapp.com/send/?phone=${item.whatsapp || '84797016179'}&text&type=phone_number&app_absent=0" target="_blank" style="display: block; background: #25D366; color: white; padding: 10px; border-radius: 6px; text-align: center; text-decoration: none; font-weight: 600;">
+                                        ${item.whatsapp ? `<a href="https://api.whatsapp.com/send/?phone=${item.whatsapp}&text&type=phone_number&app_absent=0" target="_blank" style="display: block; background: #25D366; color: white; padding: 10px; border-radius: 6px; text-align: center; text-decoration: none; font-weight: 600;">
                                             💬 WhatsApp
-                                        </a>
-                                        <a href="https://t.me/${(item.telegram || 'gohomenhatrang').replace('@', '')}" target="_blank" style="display: block; background: #0088cc; color: white; padding: 10px; border-radius: 6px; text-align: center; text-decoration: none; font-weight: 600;">
+                                        </a>` : `<div style="display: block; background: #ccc; color: #666; padding: 10px; border-radius: 6px; text-align: center; font-weight: 600;">
+                                            💬 WhatsApp
+                                        </div>`}
+                                        ${item.telegram ? `<a href="https://t.me/${item.telegram.replace('@', '')}" target="_blank" style="display: block; background: #0088cc; color: white; padding: 10px; border-radius: 6px; text-align: center; text-decoration: none; font-weight: 600;">
                                             ✈️ Telegram
-                                        </a>
+                                        </a>` : `<div style="display: block; background: #ccc; color: #666; padding: 10px; border-radius: 6px; text-align: center; font-weight: 600;">
+                                            ✈️ Telegram
+                                        </div>`}
                                     </div>
                                     ${category === 'restaurants' ? `
                                     <!-- Google Maps кнопка для ресторанов -->
