@@ -2117,21 +2117,64 @@ def save_blacklist(data):
     with open(CHAT_BLACKLIST_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
+CHAT_USERS_FILE = 'chat_users.json'
+
+def load_chat_users():
+    if os.path.exists(CHAT_USERS_FILE):
+        with open(CHAT_USERS_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {}
+
+def save_chat_users(data):
+    with open(CHAT_USERS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+def find_chat_id_by_username(username):
+    users = load_chat_users()
+    username_lower = username.lower().replace('@', '')
+    if username_lower in users:
+        return users[username_lower]
+    
+    bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
+    if not bot_token:
+        return None
+    
+    try:
+        url = f"https://api.telegram.org/bot{bot_token}/getUpdates?limit=100"
+        resp = requests.get(url, timeout=10)
+        if resp.status_code == 200:
+            updates = resp.json().get('result', [])
+            for upd in updates:
+                msg = upd.get('message', {})
+                user = msg.get('from', {})
+                uname = user.get('username', '').lower()
+                chat_id = msg.get('chat', {}).get('id')
+                if uname and chat_id:
+                    users[uname] = str(chat_id)
+            save_chat_users(users)
+            if username_lower in users:
+                return users[username_lower]
+    except Exception as e:
+        print(f"Error finding chat_id: {e}")
+    return None
+
 @app.route('/api/chat/request-code', methods=['POST'])
 def request_chat_code():
     data = request.json
-    telegram_id = data.get('telegram_id', '').strip()
-    if not telegram_id:
-        return jsonify({'success': False, 'error': 'Укажите ваш Telegram ID'})
-    
-    telegram_id = telegram_id.replace('@', '')
+    username = data.get('telegram_id', '').strip().replace('@', '')
+    if not username:
+        return jsonify({'success': False, 'error': 'Укажите ваш @username'})
     
     blacklist = load_blacklist()
-    if telegram_id.lower() in [u.lower() for u in blacklist.get('users', [])]:
+    if username.lower() in [u.lower() for u in blacklist.get('users', [])]:
         return jsonify({'success': False, 'error': 'Ваш аккаунт заблокирован'})
     
+    chat_id = find_chat_id_by_username(username)
+    if not chat_id:
+        return jsonify({'success': False, 'error': 'Сначала напишите боту @goldantelope_bot команду /start'})
+    
     code = ''.join(random.choices(string.digits, k=6))
-    verification_codes[telegram_id.lower()] = {'code': code, 'expires': datetime.now() + timedelta(minutes=10)}
+    verification_codes[username.lower()] = {'code': code, 'expires': datetime.now() + timedelta(minutes=10), 'chat_id': chat_id}
     
     message = f"🔐 Ваш код для чата GoldAntelope:\n\n<b>{code}</b>\n\nКод действителен 10 минут."
     
@@ -2139,18 +2182,16 @@ def request_chat_code():
         bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
         if bot_token:
             url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-            resp = requests.post(url, json={'chat_id': telegram_id, 'text': message, 'parse_mode': 'HTML'}, timeout=10)
+            resp = requests.post(url, json={'chat_id': chat_id, 'text': message, 'parse_mode': 'HTML'}, timeout=10)
             if resp.status_code == 200 and resp.json().get('ok'):
                 return jsonify({'success': True, 'message': 'Код отправлен в Telegram'})
             else:
                 error_desc = resp.json().get('description', 'Ошибка отправки')
-                if 'chat not found' in error_desc.lower() or 'user not found' in error_desc.lower():
-                    return jsonify({'success': False, 'error': 'Сначала напишите боту @goldantelope_bot команду /start'})
                 return jsonify({'success': False, 'error': f'Ошибка Telegram: {error_desc}'})
     except Exception as e:
         print(f"Chat code error: {e}")
     
-    return jsonify({'success': False, 'error': 'Не удалось отправить код. Напишите боту @goldantelope_bot /start'})
+    return jsonify({'success': False, 'error': 'Не удалось отправить код'})
 
 @app.route('/api/chat/verify-code', methods=['POST'])
 def verify_chat_code():
