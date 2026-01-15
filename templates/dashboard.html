@@ -3269,8 +3269,8 @@
                                     }
                                     ${category === 'restaurants' && cuisineType ? `<span style="background:#795548;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">${cuisineType}</span>` : ''}
                                     ${category === 'restaurants' && item.city ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">📍 ${getCityRu(item.city)}</span>` : ''}
-                                    ${category === 'restaurants' && priceCatBadge ? `<span style="background:transparent;border:2px solid #d4af37;color:#d4af37;padding:5px 10px;border-radius:4px;font-size:16px;">${priceCatBadge}</span>` : ''}
-                                    ${category === 'restaurants' && item.google_rating ? `<span style="background:#FFC107;color:#333;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">⭐ ${item.google_rating}</span>` : ''}
+                                    ${category === 'restaurants' && priceCatBadge ? `<span style="font-size:18px;text-shadow:0 1px 3px rgba(0,0,0,0.5);">${priceCatBadge}</span>` : ''}
+                                    ${category === 'restaurants' && item.google_rating ? `<span style="font-size:16px;text-shadow:0 1px 3px rgba(0,0,0,0.5);">⭐ ${item.google_rating}</span>` : ''}
                                     ${category !== 'restaurants' && item.area ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">📐 ${item.area}m²</span>` : ''}
                                     ${category !== 'restaurants' && item.rooms ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🛏 ${item.rooms} комн.</span>` : ''}
                                 </div>
