@@ -1297,8 +1297,8 @@
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
                         <div>
-                            <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">💰 Цена ($)</label>
-                            <input type="number" id="transport-price" placeholder="500" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">💰 Цена (VND) *</label>
+                            <input type="number" id="transport-price" required placeholder="900000000" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
                         </div>
                         <div>
                             <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">🏷️ Тип</label>
@@ -3365,9 +3365,14 @@
                                         </div>
                                     </div>
                                     <!-- Цена -->
-                                    ${displayPrice ? `<div style="background: linear-gradient(135deg, #d4af37, #f4d03f); color: #000; padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; text-align: center;">
-                                        <span style="font-size: 18px; font-weight: bold;">💰 ${displayPrice}</span>
-                                    </div>` : ''}
+                                    ${(category === 'transport' || category === 'bike_rentals') 
+                                        ? (item.price ? `<div style="background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; text-align: center;">
+                                            <span style="font-size: 18px; font-weight: bold;">💰 ${Number(item.price).toLocaleString('vi-VN')} VND</span>
+                                        </div>` : '')
+                                        : (displayPrice ? `<div style="background: linear-gradient(135deg, #d4af37, #f4d03f); color: #000; padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; text-align: center;">
+                                            <span style="font-size: 18px; font-weight: bold;">💰 ${displayPrice}</span>
+                                        </div>` : '')
+                                    }
                                     <!-- WhatsApp и Telegram кнопки -->
                                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
                                         ${item.whatsapp ? `<a href="https://api.whatsapp.com/send/?phone=${item.whatsapp}&text&type=phone_number&app_absent=0" target="_blank" style="display: block; background: transparent; border: 2px solid #25D366; color: #25D366; padding: 10px; border-radius: 6px; text-align: center; text-decoration: none; font-weight: 600;">
