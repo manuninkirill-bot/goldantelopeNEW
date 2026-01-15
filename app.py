@@ -1273,6 +1273,82 @@ def submit_transport():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/submit-kids', methods=['POST'])
+def submit_kids():
+    try:
+        captcha_answer = request.form.get('captcha_answer', '')
+        captcha_token = request.form.get('captcha_token', '')
+        
+        expected = captcha_storage.get(captcha_token)
+        if not expected or captcha_answer != expected:
+            return jsonify({'error': 'Неверная капча'}), 400
+        
+        if captcha_token in captcha_storage:
+            del captcha_storage[captcha_token]
+        
+        country = request.form.get('country', 'vietnam')
+        title = request.form.get('title', '')
+        kids_type = request.form.get('kids_type', 'schools')
+        description = request.form.get('description', '')
+        city = request.form.get('city', '')
+        age = request.form.get('age', '')
+        location = request.form.get('location', '')
+        google_maps = request.form.get('google_maps', '')
+        contact_name = request.form.get('contact_name', '')
+        whatsapp = request.form.get('whatsapp', '')
+        telegram = request.form.get('telegram', '')
+        
+        if not title or not description:
+            return jsonify({'error': 'Заполните название и описание'}), 400
+        
+        if not city or not age:
+            return jsonify({'error': 'Заполните город и возраст'}), 400
+        
+        images = []
+        for i in range(4):
+            file = request.files.get(f'photo_{i}')
+            if file and file.filename:
+                import base64
+                file_data = file.read()
+                if len(file_data) > 1024 * 1024:
+                    return jsonify({'error': f'Фото {i+1} превышает 1 МБ'}), 400
+                
+                ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else 'jpg'
+                data_url = f"data:image/{ext};base64,{base64.b64encode(file_data).decode()}"
+                images.append(data_url)
+        
+        listing_id = f"pending_kids_{country}_{int(time.time())}_{len(load_pending_listings(country))}"
+        
+        new_listing = {
+            'id': listing_id,
+            'title': title,
+            'kids_type': kids_type,
+            'description': description,
+            'city': city,
+            'age': age,
+            'location': location if location else None,
+            'google_maps': google_maps if google_maps else None,
+            'contact_name': contact_name,
+            'whatsapp': whatsapp,
+            'telegram': telegram,
+            'category': 'kids',
+            'image_url': images[0] if images else None,
+            'all_images': images if len(images) > 1 else None,
+            'date': datetime.now().isoformat(),
+            'status': 'pending'
+        }
+        
+        pending = load_pending_listings(country)
+        pending.append(new_listing)
+        save_pending_listings(country, pending)
+        
+        kids_type_labels = {'schools': 'Садики и школы', 'events': 'Мероприятия', 'nannies': 'Няни и кружки'}
+        send_telegram_notification(f"<b>Новое объявление для детей</b>\n\n<b>{title}</b>\nТип: {kids_type_labels.get(kids_type, kids_type)}\nГород: {city}\nВозраст: {age}\n\n{description[:200]}...\n\n✈️ @radimiralubvi")
+        
+        return jsonify({'success': True, 'message': 'Объявление отправлено на модерацию'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/admin/pending', methods=['POST'])
 def admin_get_pending():
     password = request.json.get('password', '')

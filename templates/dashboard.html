@@ -1746,9 +1746,128 @@
                     </div>
                 </div>
                 
+                <!-- Кнопка добавить объявление -->
+                <div onclick="switchTab('submit-kids')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 16/5; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 20px;">
+                    <img src="/static/images/submit_listing.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
+                        <div style="text-align: center; color: white;">
+                            <div style="font-size: 28px; margin-bottom: 5px;">➕</div>
+                            <div style="font-weight: bold; font-size: 18px;">Добавить объявление</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="kids-feed" style="max-height: 600px; overflow-y: auto;">
                     <div class="loading"><div class="spinner"></div></div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Форма подачи для детей -->
+        <div id="submit-kids" class="content">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%); color: white; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                    <h2 style="margin: 0 0 10px 0; font-size: 22px;">👶 Добавить объявление для детей</h2>
+                    <p style="margin: 0; opacity: 0.9;">Садики, школы, няни, кружки, мероприятия. После модерации объявление появится на сайте.</p>
+                </div>
+
+                <form id="submit-kids-form" style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #ddd;">
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">🏷️ Тип *</label>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 15px; border: 2px solid #4CAF50; border-radius: 8px; background: #fff;">
+                                <input type="radio" name="kids-type" value="schools" checked> 🏫 Садики и школы
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 15px; border: 2px solid #FF9800; border-radius: 8px; background: #fff;">
+                                <input type="radio" name="kids-type" value="events"> 🎈 Мероприятия
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 15px; border: 2px solid #9C27B0; border-radius: 8px; background: #fff;">
+                                <input type="radio" name="kids-type" value="nannies"> 👩‍👧 Няни и кружки
+                            </label>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">Название *</label>
+                        <input type="text" id="kids-title" required placeholder="Например: Детский сад 'Солнышко'" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">Описание *</label>
+                        <textarea id="kids-description" required rows="4" placeholder="Подробное описание услуги..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; resize: vertical;"></textarea>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">🏙️ Город *</label>
+                            <select id="kids-city" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                                <option value="Nha Trang">Нячанг</option>
+                                <option value="Ho Chi Minh">Хошимин</option>
+                                <option value="Da Nang">Дананг</option>
+                                <option value="Hanoi">Ханой</option>
+                                <option value="Phu Quoc">Фукуок</option>
+                                <option value="Phan Thiet">Фантьет</option>
+                                <option value="Cam Ranh">Камрань</option>
+                                <option value="Da Lat">Далат</option>
+                                <option value="Hoi An">Хойан</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">👶 Возраст *</label>
+                            <input type="text" id="kids-age" required placeholder="0-3, 3-6, 7-12..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📍 Расположение</label>
+                        <input type="text" id="kids-location" placeholder="Район, улица..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #4285F4;">🗺️ Ссылка на Google Maps</label>
+                        <input type="url" id="kids-google-maps" placeholder="https://maps.google.com/..." style="width: 100%; padding: 12px; border: 1px solid #4285F4; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                        <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">Откройте место в Google Maps → Поделиться → Копировать ссылку</p>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">👤 Контактное лицо *</label>
+                        <input type="text" id="kids-contact-name" required placeholder="Ваше имя" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #25D366;">💬 WhatsApp</label>
+                            <input type="text" id="kids-whatsapp" placeholder="8499999999" style="width: 100%; padding: 12px; border: 1px solid #25D366; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #0088cc;">✈️ Telegram *</label>
+                            <input type="text" id="kids-telegram" required placeholder="@username" style="width: 100%; padding: 12px; border: 1px solid #0088cc; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📷 Фото (до 4 шт, макс 1 МБ каждое)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <input type="file" id="kids-photo-0" accept="image/*" style="font-size: 12px;">
+                            <input type="file" id="kids-photo-1" accept="image/*" style="font-size: 12px;">
+                            <input type="file" id="kids-photo-2" accept="image/*" style="font-size: 12px;">
+                            <input type="file" id="kids-photo-3" accept="image/*" style="font-size: 12px;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px; padding: 15px; background: #f5f5f5; border-radius: 6px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">🤖 Капча *</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span id="kids-captcha-question" style="font-size: 18px; font-weight: bold; color: #333;">Загрузка...</span>
+                            <input type="text" id="kids-captcha" required placeholder="Ответ" style="width: 100px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; text-align: center;">
+                            <button type="button" onclick="loadKidsCaptcha()" style="padding: 10px; background: #eee; border: none; border-radius: 6px; cursor: pointer;">🔄</button>
+                        </div>
+                        <input type="hidden" id="kids-captcha-answer">
+                    </div>
+
+                    <div id="kids-submit-status" style="margin-bottom: 15px; font-size: 14px; display: none;"></div>
+
+                    <button type="submit" style="width: 100%; padding: 15px; background: #FF9800; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 16px;">📤 Отправить на модерацию</button>
+                </form>
             </div>
         </div>
 
@@ -2551,6 +2670,8 @@
                 loadChatFeed();
             } else if (tabName === 'settings') {
                 loadKidsFeed();
+            } else if (tabName === 'submit-kids') {
+                loadKidsCaptcha();
             } else if (tabName === 'realestate') {
                 loadRealEstateCounts();
                 loadListings('real_estate');
@@ -2833,20 +2954,28 @@
                         let images = item.all_images || (item.image_url ? [item.image_url] : []);
                         let sliderHtml = '';
                         
+                        const kidsTypeLabel = {
+                            'schools': '🏫 Садики и школы',
+                            'events': '🎈 Мероприятия', 
+                            'nannies': '👩‍👧 Няни и кружки'
+                        }[item.kids_type] || '';
+                        
                         if (images.length > 0) {
                             sliderHtml = `<div style="width: 100%; height: 180px; overflow: hidden; border-radius: 8px 8px 0 0; position: relative;">
                                 <img src="${images[0]}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/static/images/placeholder.jpg'">
                                 <div style="position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 4px;">
-                                    ${item.city ? `<span style="background: #FF9800; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">📍 ${item.city}</span>` : ''}
-                                    ${item.age ? `<span style="background: #9C27B0; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">👶 ${item.age}</span>` : ''}
+                                    ${kidsTypeLabel ? `<span style="color: white; font-size: 13px; font-weight: 600; text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">${kidsTypeLabel}</span>` : ''}
+                                    ${item.city ? `<span style="color: white; font-size: 12px; font-weight: 600; text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">📍 ${item.city}</span>` : ''}
+                                    ${item.age ? `<span style="color: white; font-size: 12px; font-weight: 600; text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">👶 ${item.age}</span>` : ''}
                                 </div>
                             </div>`;
                         } else {
                             sliderHtml = `<div style="width: 100%; height: 180px; background: linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%); border-radius: 8px 8px 0 0; position: relative; display: flex; align-items: center; justify-content: center;">
                                 <span style="font-size: 48px;">🏫</span>
                                 <div style="position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 4px;">
-                                    ${item.city ? `<span style="background: #FF9800; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">📍 ${item.city}</span>` : ''}
-                                    ${item.age ? `<span style="background: #9C27B0; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">👶 ${item.age}</span>` : ''}
+                                    ${kidsTypeLabel ? `<span style="color: #333; font-size: 13px; font-weight: 600;">${kidsTypeLabel}</span>` : ''}
+                                    ${item.city ? `<span style="color: #333; font-size: 12px; font-weight: 600;">📍 ${item.city}</span>` : ''}
+                                    ${item.age ? `<span style="color: #333; font-size: 12px; font-weight: 600;">👶 ${item.age}</span>` : ''}
                                 </div>
                             </div>`;
                         }
@@ -4177,6 +4306,73 @@
                     document.getElementById('transport-captcha-answer').value = data.token;
                 });
         }
+
+        function loadKidsCaptcha() {
+            fetch('/api/captcha')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('kids-captcha-question').textContent = data.question;
+                    document.getElementById('kids-captcha-answer').value = data.token;
+                });
+        }
+
+        document.getElementById('submit-kids-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const status = document.getElementById('kids-submit-status');
+            status.style.display = 'block';
+            status.textContent = '⏳ Отправка...';
+            status.style.color = '#666';
+
+            const formData = new FormData();
+            formData.append('country', currentCountry);
+            formData.append('category', 'kids');
+            formData.append('title', document.getElementById('kids-title').value);
+            formData.append('kids_type', document.querySelector('input[name="kids-type"]:checked')?.value || 'schools');
+            formData.append('description', document.getElementById('kids-description').value);
+            formData.append('city', document.getElementById('kids-city').value);
+            formData.append('age', document.getElementById('kids-age').value);
+            formData.append('location', document.getElementById('kids-location').value);
+            formData.append('google_maps', document.getElementById('kids-google-maps').value);
+            formData.append('contact_name', document.getElementById('kids-contact-name').value);
+            formData.append('whatsapp', document.getElementById('kids-whatsapp').value);
+            formData.append('telegram', document.getElementById('kids-telegram').value);
+            formData.append('captcha_answer', document.getElementById('kids-captcha').value);
+            formData.append('captcha_token', document.getElementById('kids-captcha-answer').value);
+
+            for (let i = 0; i < 4; i++) {
+                const file = document.getElementById(`kids-photo-${i}`).files[0];
+                if (file) {
+                    if (file.size > 1024 * 1024) {
+                        status.textContent = `❌ Фото ${i+1} превышает 1 МБ`;
+                        status.style.color = '#ff6b6b';
+                        return;
+                    }
+                    formData.append(`photo_${i}`, file);
+                }
+            }
+
+            try {
+                const response = await fetch('/api/submit-kids', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    status.textContent = '✅ ' + data.message;
+                    status.style.color = '#4CAF50';
+                    document.getElementById('submit-kids-form').reset();
+                    loadKidsCaptcha();
+                } else {
+                    status.textContent = '❌ ' + (data.error || 'Ошибка');
+                    status.style.color = '#ff6b6b';
+                    loadKidsCaptcha();
+                }
+            } catch (err) {
+                status.textContent = '❌ Ошибка отправки';
+                status.style.color = '#ff6b6b';
+            }
+        });
 
         document.getElementById('submit-restaurant-form').addEventListener('submit', async function(e) {
             e.preventDefault();
