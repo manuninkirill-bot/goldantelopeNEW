@@ -3366,6 +3366,15 @@
                         return !isEnglishOnly(text);
                     });
                     
+                    // Сортировка по рейтингу для фильтра "Высокий рейтинг"
+                    if (category === 'restaurants' && currentRestaurantType === 'high_rating') {
+                        filteredData.sort((a, b) => {
+                            const ratingA = parseFloat(a.google_rating) || 0;
+                            const ratingB = parseFloat(b.google_rating) || 0;
+                            return ratingB - ratingA; // По убыванию
+                        });
+                    }
+                    
                     console.log(`DEBUG: Rendering ${filteredData.length} items to ${gridId}`);
                     
                     // Обновим заголовок категории с количеством
