@@ -3146,7 +3146,7 @@
             const container = document.getElementById('chat-messages');
             if (!container) return;
             try {
-                const r = await fetch('/api/chat/messages');
+                const r = await fetch(`/api/chat/messages?country=${currentCountry}`);
                 const data = await r.json();
                 const messages = data.messages || [];
                 if (messages.length === 0) {
@@ -3185,7 +3185,7 @@
                 const r = await fetch('/api/chat/send', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({token: chatToken, message: message})
+                    body: JSON.stringify({token: chatToken, message: message, country: currentCountry})
                 });
                 const data = await r.json();
                 if (!data.success) {

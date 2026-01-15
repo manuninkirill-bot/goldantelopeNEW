@@ -2302,9 +2302,20 @@ verification_codes = {}
 import random
 import string
 
-def load_chat_data():
-    if os.path.exists(CHAT_DATA_FILE):
-        with open(CHAT_DATA_FILE, 'r', encoding='utf-8') as f:
+CHAT_FILES = {
+    'vietnam': 'internal_chat.json',
+    'thailand': 'internal_chat_thailand.json',
+    'india': 'internal_chat_india.json',
+    'indonesia': 'internal_chat_indonesia.json'
+}
+
+def get_chat_file(country='vietnam'):
+    return CHAT_FILES.get(country, CHAT_FILES['vietnam'])
+
+def load_chat_data(country='vietnam'):
+    chat_file = get_chat_file(country)
+    if os.path.exists(chat_file):
+        with open(chat_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
             messages = data.get('messages', [])
             three_days_ago = datetime.now() - timedelta(days=3)
@@ -2312,10 +2323,11 @@ def load_chat_data():
             return {'messages': messages[-500:], 'users': data.get('users', {})}
     return {'messages': [], 'users': {}}
 
-def save_chat_data(data):
+def save_chat_data(data, country='vietnam'):
+    chat_file = get_chat_file(country)
     three_days_ago = datetime.now() - timedelta(days=3)
     data['messages'] = [m for m in data.get('messages', []) if datetime.fromisoformat(m.get('timestamp', '2000-01-01')) > three_days_ago][-500:]
-    with open(CHAT_DATA_FILE, 'w', encoding='utf-8') as f:
+    with open(chat_file, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 def load_blacklist():
@@ -2427,15 +2439,18 @@ def verify_chat_code():
     del verification_codes[telegram_id]
     
     session_token = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
-    chat_data = load_chat_data()
-    chat_data['users'][session_token] = {'telegram_id': telegram_id, 'created': datetime.now().isoformat()}
-    save_chat_data(chat_data)
+    
+    for country in CHAT_FILES.keys():
+        chat_data = load_chat_data(country)
+        chat_data['users'][session_token] = {'telegram_id': telegram_id, 'created': datetime.now().isoformat()}
+        save_chat_data(chat_data, country)
     
     return jsonify({'success': True, 'token': session_token, 'username': telegram_id})
 
 @app.route('/api/chat/messages', methods=['GET'])
 def get_chat_messages():
-    chat_data = load_chat_data()
+    country = request.args.get('country', 'vietnam')
+    chat_data = load_chat_data(country)
     return jsonify({'messages': chat_data.get('messages', [])[-500:]})
 
 @app.route('/api/chat/send', methods=['POST'])
@@ -2443,6 +2458,7 @@ def send_chat_message():
     data = request.json
     token = data.get('token', '')
     message = data.get('message', '').strip()
+    country = data.get('country', 'vietnam')
     
     if not token or not message:
         return jsonify({'success': False, 'error': 'Требуется авторизация'})
@@ -2450,7 +2466,7 @@ def send_chat_message():
     if len(message) > 2000:
         return jsonify({'success': False, 'error': 'Сообщение слишком длинное (макс 2000 символов)'})
     
-    chat_data = load_chat_data()
+    chat_data = load_chat_data(country)
     user = chat_data.get('users', {}).get(token)
     if not user:
         return jsonify({'success': False, 'error': 'Сессия истекла, войдите заново'})
@@ -2469,7 +2485,7 @@ def send_chat_message():
     }
     
     chat_data['messages'].append(new_message)
-    save_chat_data(chat_data)
+    save_chat_data(chat_data, country)
     
     # Дублируем сообщение в Telegram канал
     if TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID:
