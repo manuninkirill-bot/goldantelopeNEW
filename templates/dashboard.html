@@ -3124,6 +3124,15 @@
                                     if (rating < 4.0) {
                                         return false;
                                     }
+                                } else if (currentRestaurantType === 'морепродукт') {
+                                    // Фильтр морепродуктов - расширенный поиск
+                                    const desc = (item.description || item.title || '').toLowerCase();
+                                    const restType = (item.restaurant_type || '').toLowerCase();
+                                    const seafoodKeywords = ['морепродукт', 'seafood', 'рыб', 'краб', 'креветк', 'устриц', 'омар', 'лобстер', 'кальмар', 'осьминог', 'мидии', 'fish', 'crab', 'shrimp', 'oyster', 'hải sản'];
+                                    const hasSeafood = seafoodKeywords.some(kw => desc.includes(kw) || restType.includes(kw));
+                                    if (!hasSeafood) {
+                                        return false;
+                                    }
                                 } else {
                                     const desc = (item.description || item.title || '').toLowerCase();
                                     if (!desc.includes(currentRestaurantType)) {
