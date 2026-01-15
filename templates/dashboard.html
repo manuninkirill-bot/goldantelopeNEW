@@ -1522,6 +1522,21 @@
             <div id="other-realestate-buttons" style="display: none; padding: 20px;">
                 <div id="realestate-city-grid" class="tour-grid-container" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px;">
                 </div>
+                <!-- Фильтры для других стран -->
+                <div class="filters" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+                    <button onclick="filterRealEstateType('rent')" class="filter-type-btn" style="padding: 10px 20px; background: #fff; border: 2px solid #2196F3; border-radius: 8px; cursor: pointer; font-weight: 600; color: #333;">🔑 Аренда</button>
+                    <button onclick="filterRealEstateType('sale')" class="filter-type-btn" style="padding: 10px 20px; background: #fff; border: 2px solid #4CAF50; border-radius: 8px; cursor: pointer; font-weight: 600; color: #333;">🏠 Продажа</button>
+                    <span style="border-left: 2px solid #ddd; margin: 0 5px;"></span>
+                    <button onclick="sortRealEstate('price_desc')" class="sort-btn" style="padding: 10px 20px; background: #fff; border: 2px solid #d4af37; border-radius: 8px; cursor: pointer; font-weight: 600; color: #333;">💰 Дороже</button>
+                    <button onclick="sortRealEstate('price_asc')" class="sort-btn" style="padding: 10px 20px; background: #fff; border: 2px solid #d4af37; border-radius: 8px; cursor: pointer; font-weight: 600; color: #333;">💵 Дешевле</button>
+                    <button onclick="filterRealEstatePrice(7000000)" class="filter-btn" style="padding: 10px 20px; background: #fff; border: 2px solid #FF9800; border-radius: 8px; cursor: pointer; font-weight: 600; color: #333;">До 7 млн</button>
+                    <button onclick="filterRealEstatePrice(15000000)" class="filter-btn" style="padding: 10px 20px; background: #fff; border: 2px solid #FF9800; border-radius: 8px; cursor: pointer; font-weight: 600; color: #333;">До 15 млн</button>
+                    <button onclick="resetRealEstateFilters()" class="reset-btn" style="padding: 10px 20px; background: #fff; border: 2px solid #999; border-radius: 8px; cursor: pointer; font-weight: 600; color: #333;">✕ Сброс</button>
+                </div>
+                <!-- Кнопка Подать -->
+                <div style="display: flex; justify-content: center; margin-top: 10px;">
+                    <button onclick="switchTab('submit-realestate')" style="padding: 15px 40px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(76,175,80,0.3);">📝 Подать объявление</button>
+                </div>
             </div>
             <div class="listing-grid" id="real_estate-grid">
                 <div class="loading"><div class="spinner"></div></div>
