@@ -347,6 +347,55 @@ def status():
         'online_count': online_counts.get(country, 100)
     })
 
+@app.route('/api/city-counts/<category>')
+def get_city_counts(category):
+    country = request.args.get('country', 'vietnam')
+    data = load_data(country)
+    
+    category_aliases = {
+        'exchange': 'money_exchange',
+        'money_exchange': 'money_exchange',
+        'bikes': 'transport',
+        'realestate': 'real_estate'
+    }
+    category = category_aliases.get(category, category)
+    
+    if category not in data:
+        return jsonify({})
+    
+    listings = data[category]
+    listings = [x for x in listings if not x.get('hidden', False)]
+    
+    city_name_mapping = {
+        'Nha Trang': 'Нячанг', 'nha trang': 'Нячанг', 'nhatrang': 'Нячанг',
+        'Saigon': 'Хошимин', 'Ho Chi Minh': 'Хошимин', 'saigon': 'Хошимин', 'hcm': 'Хошимин',
+        'Da Nang': 'Дананг', 'danang': 'Дананг', 'Danang': 'Дананг',
+        'Hanoi': 'Ханой', 'hanoi': 'Ханой', 'Ha Noi': 'Ханой',
+        'Phu Quoc': 'Фукуок', 'phuquoc': 'Фукуок', 'Phuquoc': 'Фукуок',
+        'Phan Thiet': 'Фантьет', 'phanthiet': 'Фантьет', 'Phanthiet': 'Фантьет',
+        'Mui Ne': 'Муйне', 'muine': 'Муйне', 'Muine': 'Муйне',
+        'Cam Ranh': 'Камрань', 'camranh': 'Камрань', 'Camranh': 'Камрань',
+        'Da Lat': 'Далат', 'dalat': 'Далат', 'Dalat': 'Далат',
+        'Hoi An': 'Хойан', 'hoian': 'Хойан', 'Hoian': 'Хойан'
+    }
+    
+    cities = ['Нячанг', 'Хошимин', 'Ханой', 'Фукуок', 'Фантьет', 'Муйне', 'Дананг', 'Камрань', 'Далат', 'Хойан']
+    counts = {city: 0 for city in cities}
+    
+    for item in listings:
+        item_city = item.get('city', '') or item.get('location', '')
+        normalized = city_name_mapping.get(item_city, item_city)
+        if normalized in counts:
+            counts[normalized] += 1
+        else:
+            for search_city in cities:
+                search_text = f"{item.get('title', '')} {item.get('description', '')} {item_city}".lower()
+                if search_city.lower() in search_text:
+                    counts[search_city] += 1
+                    break
+    
+    return jsonify(counts)
+
 @app.route('/api/listings/<category>')
 def get_listings(category):
     country = request.args.get('country', 'vietnam')

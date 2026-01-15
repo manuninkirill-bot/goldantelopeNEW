@@ -2546,6 +2546,34 @@
 
         let bannerConfig = {};
 
+        async function loadCityCounts(category, btnClass) {
+            try {
+                const r = await fetch(`/api/city-counts/${category}?country=${currentCountry}`);
+                const counts = await r.json();
+                document.querySelectorAll(btnClass).forEach(btn => {
+                    const city = btn.dataset.city;
+                    if (city && counts[city] !== undefined) {
+                        const countEl = btn.querySelector('.tour-count');
+                        if (countEl) {
+                            const num = counts[city];
+                            let word = 'объявлений';
+                            if (num % 10 === 1 && num % 100 !== 11) word = 'объявление';
+                            else if ([2,3,4].includes(num % 10) && ![12,13,14].includes(num % 100)) word = 'объявления';
+                            countEl.textContent = `${num} ${word}`;
+                        }
+                    }
+                });
+            } catch(e) { console.error('Error loading city counts:', e); }
+        }
+        
+        function updateAllCityCounts() {
+            if (currentCountry === 'vietnam') {
+                loadCityCounts('entertainment', '.entertainment-city-btn');
+                loadCityCounts('restaurants', '.restaurant-city-btn');
+                loadCityCounts('tours', '.tour-city-btn:not(.entertainment-city-btn):not(.kids-category-btn)');
+            }
+        }
+        
         async function loadBanners() {
             try {
                 console.log('Loading banners...');
@@ -2657,6 +2685,7 @@
             
             updateRates();
             loadStats();
+            updateAllCityCounts();
             if (document.getElementById('chat').classList.contains('active')) loadChatFeed();
             loadListings('restaurants');
         }
@@ -3701,6 +3730,7 @@
 
         // Инициализируем баннер, статистику и курсы при открытии
         loadBanners();
+        updateAllCityCounts();
         
         updateRates();
         loadStats();
