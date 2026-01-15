@@ -3267,8 +3267,8 @@
                                             ? (item.listing_type === 'rent' ? '<span style="background:#2196F3;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🔑 Аренда</span>' : '<span style="background:#4CAF50;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🏠 Продажа</span>')
                                             : '')
                                     }
-                                    ${category === 'restaurants' && cuisineType ? `<span style="background:#795548;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">${cuisineType}</span>` : ''}
-                                    ${category === 'restaurants' && item.city ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">📍 ${getCityRu(item.city)}</span>` : ''}
+                                    ${category === 'restaurants' && cuisineType ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">${cuisineType}</span>` : ''}
+                                    ${category === 'restaurants' && item.city ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">📍 ${getCityRu(item.city)}</span>` : ''}
                                     ${category === 'restaurants' && priceCatBadge ? `<span style="font-size:18px;text-shadow:0 1px 3px rgba(0,0,0,0.5);">${priceCatBadge}</span>` : ''}
                                     ${category === 'restaurants' && item.google_rating ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">⭐⭐⭐⭐⭐ ${item.google_rating}</span>` : ''}
                                     ${category !== 'restaurants' && item.area ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">📐 ${item.area}m²</span>` : ''}
