@@ -321,6 +321,66 @@ def groups_stats():
         'total_online': sum(g.get('online', 0) for g in groups)
     })
 
+def load_ads_channels(country):
+    """Загрузить рекламные каналы"""
+    filename = f'ads_channels_{country}.json'
+    if os.path.exists(filename):
+        with open(filename, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {'channels': []}
+
+def save_ads_channels(country, data):
+    """Сохранить рекламные каналы"""
+    filename = f'ads_channels_{country}.json'
+    with open(filename, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+@app.route('/api/ads-channels')
+def get_ads_channels():
+    """Получить список рекламных каналов"""
+    country = request.args.get('country', 'vietnam')
+    data = load_ads_channels(country)
+    return jsonify(data)
+
+@app.route('/api/ads-channels/add', methods=['POST'])
+def add_ads_channel():
+    """Добавить канал для рекламы"""
+    try:
+        req = request.json
+        country = req.get('country', 'vietnam')
+        name = req.get('name', '').strip()
+        category = req.get('category', 'chat')
+        members = int(req.get('members', 0))
+        price = int(req.get('price', 30))
+        contact = req.get('contact', '').strip()
+        
+        if not name or not contact:
+            return jsonify({'success': False, 'error': 'Укажите название и контакт'})
+        
+        data = load_ads_channels(country)
+        
+        # Проверяем дубликаты
+        for ch in data['channels']:
+            if ch['name'].lower() == name.lower():
+                return jsonify({'success': False, 'error': 'Канал уже добавлен'})
+        
+        new_channel = {
+            'id': f'ad_{int(time.time())}',
+            'name': name,
+            'category': category,
+            'members': members,
+            'price': price,
+            'contact': contact,
+            'added': datetime.now().isoformat()
+        }
+        
+        data['channels'].append(new_channel)
+        save_ads_channels(country, data)
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
 @app.route('/api/status')
 def status():
     country = request.args.get('country', 'vietnam')

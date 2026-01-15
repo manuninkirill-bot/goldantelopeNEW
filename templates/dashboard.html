@@ -888,39 +888,75 @@
             <button class="tab" data-tab="news" onclick="switchTab('news')"><img src="/static/icons/photoshoot.jpg" alt="Фотосессия"><span>Фотосессия</span></button>
             <button class="tab" data-tab="medicine" onclick="switchTab('medicine')"><img src="/static/icons/medicine_new.png" alt="Медицина"><span>Медицина</span></button>
             <button class="tab" data-tab="chat" onclick="switchTab('chat')"><img src="/static/images/icons/chat.jpg" alt="Чат"><span>Чат</span></button>
-            <button class="tab" data-tab="stats" onclick="switchTab('stats')"><img src="/static/icons/statistics.png" alt="Статистика"><span>Статистика</span></button>
+            <button class="tab" data-tab="stats" onclick="switchTab('stats')"><img src="/static/icons/statistics.png" alt="Реклама ТГ"><span>Реклама ТГ</span></button>
             <button class="tab" data-tab="admin" onclick="switchTab('admin')" style="margin-left: auto;"><span>⚙️ Админ</span></button>
         </div>
 
-        <!-- Статистика -->
+        <!-- Реклама ТГ -->
         <div id="stats" class="content">
-            <div class="stats-grid" id="stats-grid">
-                <div class="loading"><div class="spinner"></div></div>
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                <h2 style="margin: 0 0 10px 0;">📢 Telegram Ads - Реклама в каналах</h2>
+                <p style="margin: 0; opacity: 0.9;">Разместите рекламу в популярных Telegram группах Азии. Охват тысяч русскоязычных пользователей!</p>
             </div>
             
-            <div style="margin-top: 20px; background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <h3 style="margin: 0 0 15px 0; color: #333; font-size: 16px; display: flex; align-items: center; gap: 8px;">
-                    <img src="/static/icons/stats-chart.png" alt="Статистика" style="width: 24px; height: 24px; object-fit: contain;"> Статистика по группам
-                    <span id="stats-updated" style="font-size: 12px; color: #888; font-weight: normal; margin-left: auto;"></span>
-                </h3>
+            <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">📋 Доступные группы для рекламы</h3>
                 <div style="overflow-x: auto;">
-                    <table id="groups-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                    <table id="ads-table" style="width: 100%; border-collapse: collapse; font-size: 14px;">
                         <thead>
                             <tr style="background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%); color: white;">
-                                <th style="padding: 10px; text-align: left; border-radius: 8px 0 0 0;">Категория</th>
-                                <th style="padding: 10px; text-align: center;">Групп</th>
-                                <th style="padding: 10px; text-align: center;">Охват</th>
-                                <th style="padding: 10px; text-align: center;">Онлайн</th>
-                                <th style="padding: 10px; text-align: center; border-radius: 0 8px 0 0;">Объявлений</th>
+                                <th style="padding: 12px; text-align: left; border-radius: 8px 0 0 0;">Группа</th>
+                                <th style="padding: 12px; text-align: center;">Охват</th>
+                                <th style="padding: 12px; text-align: center;">💰 Цена</th>
+                                <th style="padding: 12px; text-align: center;">Контакт</th>
+                                <th style="padding: 12px; text-align: center; border-radius: 0 8px 0 0;">Заказать</th>
                             </tr>
                         </thead>
-                        <tbody id="groups-tbody">
-                            <tr><td colspan="5" style="text-align: center; padding: 20px; color: #888;">Загрузка...</td></tr>
+                        <tbody id="ads-tbody">
                         </tbody>
-                        <tfoot id="groups-tfoot" style="background: #f8f9fa; font-weight: bold;">
-                        </tfoot>
                     </table>
                 </div>
+            </div>
+            
+            <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">➕ Добавить свой канал</h3>
+                <p style="color: #666; margin-bottom: 15px; font-size: 13px;">У вас есть Telegram канал? Добавьте его в наш каталог и получайте заказы на рекламу!</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Название канала</label>
+                        <input type="text" id="add-channel-name" placeholder="@your_channel" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Категория</label>
+                        <select id="add-channel-category" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                            <option value="chat">💬 Чат</option>
+                            <option value="visas">🏖️ Визы</option>
+                            <option value="realestate">🏠 Недвижимость</option>
+                            <option value="transport">🏍️ Транспорт</option>
+                            <option value="exchange">💱 Обмен денег</option>
+                            <option value="marketplace">🛍️ Барахолка</option>
+                            <option value="restaurants">🍽️ Рестораны</option>
+                            <option value="tours">🧳 Экскурсии</option>
+                            <option value="entertainment">🎮 Развлечения</option>
+                            <option value="medicine">🏥 Медицина</option>
+                            <option value="news">📰 Новости</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Подписчиков</label>
+                        <input type="number" id="add-channel-members" placeholder="1000" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Цена за пост ($)</label>
+                        <input type="number" id="add-channel-price" placeholder="30" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; color: #666; margin-bottom: 5px;">Контакт для связи</label>
+                        <input type="text" id="add-channel-contact" placeholder="@your_username" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+                </div>
+                <button onclick="addChannelForAds()" style="margin-top: 15px; padding: 12px 30px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">➕ Добавить канал</button>
+                <div id="add-channel-status" style="margin-top: 10px;"></div>
             </div>
         </div>
 
@@ -3148,36 +3184,106 @@
             return mapping[cat] || cat;
         }
         
-        function loadGroupsStats() {
-            fetch(`/api/groups-stats?country=${currentCountry}`)
+        function loadAdsChannels() {
+            fetch(`/api/ads-channels?country=${currentCountry}`)
                 .then(r => r.json())
                 .then(data => {
-                    const tbody = document.getElementById('groups-tbody');
-                    const tfoot = document.getElementById('groups-tfoot');
-                    const updatedEl = document.getElementById('stats-updated');
-                    
-                    if (data.updated) {
-                        const date = new Date(data.updated);
-                        updatedEl.textContent = 'Обновлено: ' + date.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-                    }
-                    
-                    if (!data.categories || Object.keys(data.categories).length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #888;">Нет данных. Дождитесь следующего цикла парсера.</td></tr>';
+                    const tbody = document.getElementById('ads-tbody');
+                    if (!data.channels || data.channels.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #888;">Пока нет каналов. Добавьте свой!</td></tr>';
                         return;
                     }
                     
+                    const categoryNames = {
+                        'chat': '💬 Чат',
+                        'visas': '🏖️ Визы',
+                        'realestate': '🏠 Недвижимость',
+                        'transport': '🏍️ Транспорт',
+                        'exchange': '💱 Обмен',
+                        'marketplace': '🛍️ Барахолка',
+                        'restaurants': '🍽️ Рестораны',
+                        'tours': '🧳 Экскурсии',
+                        'entertainment': '🎮 Развлечения',
+                        'medicine': '🏥 Медицина',
+                        'news': '📰 Новости'
+                    };
+                    
                     let rows = '';
+                    for (const ch of data.channels) {
+                        const catName = categoryNames[ch.category] || ch.category;
+                        rows += `
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px;">
+                                    <div style="font-weight: 600;">${ch.name}</div>
+                                    <div style="font-size: 12px; color: #888;">${catName}</div>
+                                </td>
+                                <td style="padding: 12px; text-align: center;">${ch.members.toLocaleString()}</td>
+                                <td style="padding: 12px; text-align: center; font-weight: bold; color: #d4af37;">$${ch.price}</td>
+                                <td style="padding: 12px; text-align: center;">
+                                    <a href="https://t.me/${ch.contact.replace('@', '')}" target="_blank" style="color: #0088cc; text-decoration: none;">${ch.contact}</a>
+                                </td>
+                                <td style="padding: 12px; text-align: center;">
+                                    <a href="https://t.me/${ch.contact.replace('@', '')}" target="_blank" style="padding: 8px 16px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 6px; text-decoration: none; font-size: 13px;">📩 Заказать</a>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                    tbody.innerHTML = rows;
+                })
+                .catch(e => console.error('Error loading ads channels:', e));
+        }
+        
+        async function addChannelForAds() {
+            const name = document.getElementById('add-channel-name').value.trim();
+            const category = document.getElementById('add-channel-category').value;
+            const members = parseInt(document.getElementById('add-channel-members').value) || 0;
+            const price = parseInt(document.getElementById('add-channel-price').value) || 30;
+            const contact = document.getElementById('add-channel-contact').value.trim();
+            const status = document.getElementById('add-channel-status');
+            
+            if (!name || !contact) {
+                status.innerHTML = '<span style="color: #dc3545;">Заполните название канала и контакт</span>';
+                return;
+            }
+            
+            try {
+                const r = await fetch('/api/ads-channels/add', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({name, category, members, price, contact, country: currentCountry})
+                });
+                const data = await r.json();
+                if (data.success) {
+                    status.innerHTML = '<span style="color: #4CAF50;">✅ Канал добавлен!</span>';
+                    document.getElementById('add-channel-name').value = '';
+                    document.getElementById('add-channel-members').value = '';
+                    document.getElementById('add-channel-price').value = '';
+                    document.getElementById('add-channel-contact').value = '';
+                    loadAdsChannels();
+                } else {
+                    status.innerHTML = `<span style="color: #dc3545;">${data.error}</span>`;
+                }
+            } catch(e) {
+                status.innerHTML = '<span style="color: #dc3545;">Ошибка сети</span>';
+            }
+        }
+        
+        function loadGroupsStats() {
+            loadAdsChannels();
+            fetch(`/api/groups-stats?country=${currentCountry}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.categories) return;
                     let totalGroups = 0, totalParticipants = 0, totalOnline = 0, totalListings = 0;
-                    
-                    const sortedCats = Object.entries(data.categories).sort((a, b) => b[1].participants - a[1].participants);
-                    
-                    for (const [cat, stats] of sortedCats) {
+                    for (const [cat, stats] of Object.entries(data.categories)) {
                         totalGroups += stats.groups;
                         totalParticipants += stats.participants;
                         totalOnline += stats.online;
                         totalListings += stats.listings;
-                        
-                        const tabName = getCategoryTabName(cat);
+                    }
+                    console.log('Stats loaded:', totalGroups, 'groups');
+                })
+                .catch(e => console.error('Error loading groups stats:', e));
                         rows += `
                             <tr style="border-bottom: 1px solid #eee;">
                                 <td style="padding: 10px;"><span class="category-link" onclick="switchTab('${tabName}'); loadListings('${cat === 'transport' ? 'transport' : cat === 'real_estate' ? 'real_estate' : cat === 'money_exchange' ? 'money_exchange' : cat}')">${cat}</span></td>
