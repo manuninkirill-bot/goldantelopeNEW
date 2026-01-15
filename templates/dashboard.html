@@ -1627,6 +1627,28 @@
 
         <!-- Новости -->
         <div id="news" class="content">
+            <div id="vietnam-news-buttons" style="display: none; padding: 20px;">
+                <div class="tour-grid-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px;">
+                    <div class="tour-city-btn" onclick="loadListings('news', 'Дананг')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #d4af37;">
+                        <img src="/static/icons/cities/danang_photo.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
+                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Дананг</div>
+                        </div>
+                    </div>
+                    <div class="tour-city-btn" onclick="loadListings('news', 'Нячанг')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #d4af37;">
+                        <img src="/static/icons/cities/nhatrang_photo.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
+                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Нячанг</div>
+                        </div>
+                    </div>
+                    <div class="tour-city-btn" onclick="loadListings('news', 'Фукуок')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #d4af37;">
+                        <img src="/static/icons/cities/phuquoc_photo.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
+                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Фукуок</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="listing-grid" id="news-grid">
                 <div class="loading"><div class="spinner"></div></div>
             </div>
