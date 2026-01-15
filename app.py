@@ -2083,5 +2083,192 @@ def get_telegram_photo_url(file_id):
         pass
     return None
 
+# ============ ВНУТРЕННИЙ ЧАТ С TELEGRAM АВТОРИЗАЦИЕЙ ============
+
+CHAT_DATA_FILE = 'internal_chat.json'
+CHAT_BLACKLIST_FILE = 'chat_blacklist.json'
+verification_codes = {}
+import random
+import string
+
+def load_chat_data():
+    if os.path.exists(CHAT_DATA_FILE):
+        with open(CHAT_DATA_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            messages = data.get('messages', [])
+            three_days_ago = datetime.now() - timedelta(days=3)
+            messages = [m for m in messages if datetime.fromisoformat(m.get('timestamp', '2000-01-01')) > three_days_ago]
+            return {'messages': messages[-500:], 'users': data.get('users', {})}
+    return {'messages': [], 'users': {}}
+
+def save_chat_data(data):
+    three_days_ago = datetime.now() - timedelta(days=3)
+    data['messages'] = [m for m in data.get('messages', []) if datetime.fromisoformat(m.get('timestamp', '2000-01-01')) > three_days_ago][-500:]
+    with open(CHAT_DATA_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+def load_blacklist():
+    if os.path.exists(CHAT_BLACKLIST_FILE):
+        with open(CHAT_BLACKLIST_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {'users': []}
+
+def save_blacklist(data):
+    with open(CHAT_BLACKLIST_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+@app.route('/api/chat/request-code', methods=['POST'])
+def request_chat_code():
+    data = request.json
+    telegram_id = data.get('telegram_id', '').strip()
+    if not telegram_id:
+        return jsonify({'success': False, 'error': 'Укажите ваш Telegram ID'})
+    
+    telegram_id = telegram_id.replace('@', '')
+    
+    blacklist = load_blacklist()
+    if telegram_id.lower() in [u.lower() for u in blacklist.get('users', [])]:
+        return jsonify({'success': False, 'error': 'Ваш аккаунт заблокирован'})
+    
+    code = ''.join(random.choices(string.digits, k=6))
+    verification_codes[telegram_id.lower()] = {'code': code, 'expires': datetime.now() + timedelta(minutes=10)}
+    
+    message = f"🔐 Ваш код для чата GoldAntelope:\n\n<b>{code}</b>\n\nКод действителен 10 минут."
+    
+    try:
+        bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
+        if bot_token:
+            url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+            resp = requests.post(url, json={'chat_id': telegram_id, 'text': message, 'parse_mode': 'HTML'}, timeout=10)
+            if resp.status_code == 200 and resp.json().get('ok'):
+                return jsonify({'success': True, 'message': 'Код отправлен в Telegram'})
+            else:
+                error_desc = resp.json().get('description', 'Ошибка отправки')
+                if 'chat not found' in error_desc.lower() or 'user not found' in error_desc.lower():
+                    return jsonify({'success': False, 'error': 'Сначала напишите боту @goldantelope_bot команду /start'})
+                return jsonify({'success': False, 'error': f'Ошибка Telegram: {error_desc}'})
+    except Exception as e:
+        print(f"Chat code error: {e}")
+    
+    return jsonify({'success': False, 'error': 'Не удалось отправить код. Напишите боту @goldantelope_bot /start'})
+
+@app.route('/api/chat/verify-code', methods=['POST'])
+def verify_chat_code():
+    data = request.json
+    telegram_id = data.get('telegram_id', '').strip().replace('@', '').lower()
+    code = data.get('code', '').strip()
+    
+    if not telegram_id or not code:
+        return jsonify({'success': False, 'error': 'Укажите ID и код'})
+    
+    stored = verification_codes.get(telegram_id)
+    if not stored:
+        return jsonify({'success': False, 'error': 'Сначала запросите код'})
+    
+    if datetime.now() > stored['expires']:
+        del verification_codes[telegram_id]
+        return jsonify({'success': False, 'error': 'Код истёк, запросите новый'})
+    
+    if stored['code'] != code:
+        return jsonify({'success': False, 'error': 'Неверный код'})
+    
+    del verification_codes[telegram_id]
+    
+    session_token = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
+    chat_data = load_chat_data()
+    chat_data['users'][session_token] = {'telegram_id': telegram_id, 'created': datetime.now().isoformat()}
+    save_chat_data(chat_data)
+    
+    return jsonify({'success': True, 'token': session_token, 'username': telegram_id})
+
+@app.route('/api/chat/messages', methods=['GET'])
+def get_chat_messages():
+    chat_data = load_chat_data()
+    return jsonify({'messages': chat_data.get('messages', [])[-500:]})
+
+@app.route('/api/chat/send', methods=['POST'])
+def send_chat_message():
+    data = request.json
+    token = data.get('token', '')
+    message = data.get('message', '').strip()
+    
+    if not token or not message:
+        return jsonify({'success': False, 'error': 'Требуется авторизация'})
+    
+    if len(message) > 2000:
+        return jsonify({'success': False, 'error': 'Сообщение слишком длинное (макс 2000 символов)'})
+    
+    chat_data = load_chat_data()
+    user = chat_data.get('users', {}).get(token)
+    if not user:
+        return jsonify({'success': False, 'error': 'Сессия истекла, войдите заново'})
+    
+    telegram_id = user.get('telegram_id', 'Аноним')
+    
+    blacklist = load_blacklist()
+    if telegram_id.lower() in [u.lower() for u in blacklist.get('users', [])]:
+        return jsonify({'success': False, 'error': 'Ваш аккаунт заблокирован'})
+    
+    new_message = {
+        'id': f"msg_{int(time.time())}_{random.randint(1000,9999)}",
+        'username': telegram_id,
+        'message': message,
+        'timestamp': datetime.now().isoformat()
+    }
+    
+    chat_data['messages'].append(new_message)
+    save_chat_data(chat_data)
+    
+    return jsonify({'success': True})
+
+@app.route('/api/admin/chat-blacklist', methods=['GET', 'POST'])
+def admin_chat_blacklist():
+    admin_key = request.headers.get('X-Admin-Key') or request.json.get('admin_key') if request.json else None
+    expected_key = os.environ.get('ADMIN_KEY', 'goldantelope2025')
+    if admin_key != expected_key:
+        return jsonify({'success': False, 'error': 'Неверный пароль'}), 401
+    
+    if request.method == 'GET':
+        return jsonify(load_blacklist())
+    
+    data = request.json
+    action = data.get('action')
+    username = data.get('username', '').strip().replace('@', '').lower()
+    
+    if not username:
+        return jsonify({'success': False, 'error': 'Укажите username'})
+    
+    blacklist = load_blacklist()
+    
+    if action == 'add':
+        if username not in blacklist['users']:
+            blacklist['users'].append(username)
+            save_blacklist(blacklist)
+        return jsonify({'success': True, 'message': f'{username} добавлен в чёрный список'})
+    elif action == 'remove':
+        blacklist['users'] = [u for u in blacklist['users'] if u.lower() != username]
+        save_blacklist(blacklist)
+        return jsonify({'success': True, 'message': f'{username} удалён из чёрного списка'})
+    
+    return jsonify({'success': False, 'error': 'Неизвестное действие'})
+
+@app.route('/api/admin/chat-delete', methods=['POST'])
+def admin_delete_chat_message():
+    data = request.json
+    admin_key = data.get('admin_key')
+    expected_key = os.environ.get('ADMIN_KEY', 'goldantelope2025')
+    if admin_key != expected_key:
+        return jsonify({'success': False, 'error': 'Неверный пароль'}), 401
+    
+    msg_id = data.get('message_id')
+    if not msg_id:
+        return jsonify({'success': False, 'error': 'Укажите ID сообщения'})
+    
+    chat_data = load_chat_data()
+    chat_data['messages'] = [m for m in chat_data['messages'] if m.get('id') != msg_id]
+    save_chat_data(chat_data)
+    
+    return jsonify({'success': True, 'message': 'Сообщение удалено'})
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
