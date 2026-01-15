@@ -1214,16 +1214,21 @@ def admin_moderate():
         listing['status'] = 'approved'
         
         # Отправляем фото в Telegram канал и получаем URL
+        print(f"MODERATION: Checking image_url for listing {listing.get('id')}")
+        print(f"MODERATION: image_url exists: {bool(listing.get('image_url'))}")
         if listing.get('image_url'):
             try:
                 import base64
                 image_url = listing['image_url']
                 image_data = None
+                print(f"MODERATION: image_url type: {image_url[:50] if image_url else 'None'}...")
                 
                 # Если это base64 data URL
                 if image_url.startswith('data:'):
+                    print("MODERATION: Decoding base64 image...")
                     header, b64_data = image_url.split(',', 1)
                     image_data = base64.b64decode(b64_data)
+                    print(f"MODERATION: Decoded {len(image_data)} bytes")
                 # Если это локальный файл
                 elif image_url.startswith('/static/') or image_url.startswith('static/'):
                     file_path = image_url.lstrip('/')
@@ -1739,6 +1744,7 @@ def send_photo_to_channel(image_data, caption=''):
     """Отправить фото в Telegram канал и получить file_id"""
     bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
     if not bot_token:
+        print("TELEGRAM: Bot token not found!")
         return None
     
     try:
@@ -1750,8 +1756,10 @@ def send_photo_to_channel(image_data, caption=''):
             'caption': caption[:1024] if caption else ''
         }
         
+        print(f"TELEGRAM: Sending photo to channel {TELEGRAM_PHOTO_CHANNEL}, size: {len(image_data)} bytes")
         response = requests.post(url, files=files, data=data, timeout=30)
         result = response.json()
+        print(f"TELEGRAM: Response: {result}")
         
         if result.get('ok'):
             # Получаем file_id и URL фото
@@ -1766,11 +1774,15 @@ def send_photo_to_channel(image_data, caption=''):
                 
                 if file_response.get('ok'):
                     file_path = file_response['result'].get('file_path')
-                    return f"https://api.telegram.org/file/bot{bot_token}/{file_path}"
+                    final_url = f"https://api.telegram.org/file/bot{bot_token}/{file_path}"
+                    print(f"TELEGRAM: Photo uploaded successfully! URL: {final_url[:80]}...")
+                    return final_url
+        else:
+            print(f"TELEGRAM: Failed to send photo: {result.get('description', 'Unknown error')}")
         
         return None
     except Exception as e:
-        print(f"Error sending photo to channel: {e}")
+        print(f"TELEGRAM: Error sending photo to channel: {e}")
         return None
 
 if __name__ == '__main__':
