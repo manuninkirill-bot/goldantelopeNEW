@@ -1875,6 +1875,24 @@
 
         <!-- Визаран -->
         <div id="visas" class="content">
+            <div id="vietnam-visas-buttons" style="display: none; padding: 20px;">
+                <div class="tour-grid-container" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px;">
+                    <div class="tour-city-btn visas-city-btn" data-city="Камбоджа" onclick="filterVisasByCity('Камбоджа')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #d4af37;">
+                        <img src="/static/images/visas/cambodia.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
+                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Камбоджа</div>
+                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">0 объявлений</div>
+                        </div>
+                    </div>
+                    <div class="tour-city-btn visas-city-btn" data-city="Лаос" onclick="filterVisasByCity('Лаос')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
+                        <img src="/static/images/visas/laos.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
+                            <div class="city-name" style="font-weight: bold; font-size: 16px;">Лаос</div>
+                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">0 объявлений</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="listing-grid" id="visas-grid">
                 <div class="loading"><div class="spinner"></div></div>
             </div>
@@ -3858,6 +3876,16 @@
             loadListings('entertainment', city);
         }
         
+        let currentVisasCity = '';
+        
+        function filterVisasByCity(city) {
+            currentVisasCity = city;
+            document.querySelectorAll('.visas-city-btn').forEach(btn => {
+                btn.style.border = btn.dataset.city === city ? '3px solid #d4af37' : '3px solid transparent';
+            });
+            loadListings('visas', city);
+        }
+        
         let currentKidsCategory = 'events';
         let currentKidsCity = '';
         let currentKidsAge = '';
@@ -4204,6 +4232,10 @@
             const vietnamEntBtns = document.getElementById('vietnam-entertainment-buttons');
             if (vietnamEntBtns) {
                 vietnamEntBtns.style.display = (category === 'entertainment' && currentCountry === 'vietnam') ? 'block' : 'none';
+            }
+            const vietnamVisasBtns = document.getElementById('vietnam-visas-buttons');
+            if (vietnamVisasBtns) {
+                vietnamVisasBtns.style.display = (category === 'visas' && currentCountry === 'vietnam') ? 'block' : 'none';
             }
 
             let params = new URLSearchParams();
