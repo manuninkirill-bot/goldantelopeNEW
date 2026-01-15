@@ -2822,6 +2822,9 @@
             if (!isVietnam) {
                 renderDynamicCityButtons();
             }
+            
+            // Обновляем города в формах подачи объявлений
+            updateFormCities();
 
             if (countryConfig[country] && countryConfig[country].pair) {
                 document.getElementById('local-pair').textContent = countryConfig[country].pair;
@@ -3340,6 +3343,70 @@
         };
         
         const adsCitiesByCountry = citiesByCountry;
+        
+        // Города для форм подачи объявлений с русскими названиями
+        const formCitiesByCountry = {
+            'vietnam': [
+                {value: 'Nha Trang', label: 'Нячанг'},
+                {value: 'Ho Chi Minh', label: 'Хошимин'},
+                {value: 'Da Nang', label: 'Дананг'},
+                {value: 'Hanoi', label: 'Ханой'},
+                {value: 'Phu Quoc', label: 'Фукуок'},
+                {value: 'Phan Thiet', label: 'Фантьет'},
+                {value: 'Cam Ranh', label: 'Камрань'},
+                {value: 'Da Lat', label: 'Далат'},
+                {value: 'Hoi An', label: 'Хойан'}
+            ],
+            'thailand': [
+                {value: 'Bangkok', label: 'Бангкок'},
+                {value: 'Phuket', label: 'Пхукет'},
+                {value: 'Chiang Mai', label: 'Чиангмай'},
+                {value: 'Pattaya', label: 'Паттайя'},
+                {value: 'Samui', label: 'Самуи'},
+                {value: 'Hua Hin', label: 'Хуахин'},
+                {value: 'Krabi', label: 'Краби'},
+                {value: 'Chiang Rai', label: 'Чианграй'},
+                {value: 'Udon Thani', label: 'Удон Тхани'}
+            ],
+            'indonesia': [
+                {value: 'Jakarta', label: 'Джакарта'},
+                {value: 'Bali', label: 'Бали'},
+                {value: 'Surabaya', label: 'Сурабая'},
+                {value: 'Bandung', label: 'Бандунг'},
+                {value: 'Medan', label: 'Медан'},
+                {value: 'Semarang', label: 'Семаранг'},
+                {value: 'Denpasar', label: 'Денпасар'},
+                {value: 'Makassar', label: 'Макасар'},
+                {value: 'Yogyakarta', label: 'Джокьякарта'}
+            ],
+            'india': [
+                {value: 'Mumbai', label: 'Мумбаи'},
+                {value: 'Delhi', label: 'Дели'},
+                {value: 'Bangalore', label: 'Бангалор'},
+                {value: 'Hyderabad', label: 'Хайдарабад'},
+                {value: 'Chennai', label: 'Ченнаи'},
+                {value: 'Pune', label: 'Пуна'},
+                {value: 'Kolkata', label: 'Колката'},
+                {value: 'Ahmedabad', label: 'Ахмедабад'},
+                {value: 'Jaipur', label: 'Джайпур'}
+            ]
+        };
+        
+        function updateFormCities() {
+            const cities = formCitiesByCountry[currentCountry] || formCitiesByCountry['vietnam'];
+            const formSelects = ['tour-city', 'restaurant-city', 'entertainment-city'];
+            
+            formSelects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (!select) return;
+                
+                let html = '';
+                cities.forEach(city => {
+                    html += `<option value="${city.value}">${city.label}</option>`;
+                });
+                select.innerHTML = html;
+            });
+        }
         
         function renderDynamicCityButtons() {
             const cities = citiesByCountry[currentCountry] || [];
