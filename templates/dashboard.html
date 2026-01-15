@@ -3581,12 +3581,11 @@
                     'realestate': "switchTab('submit-realestate'); loadRealEstateCaptcha();"
                 };
                 html += `
-                    <div class="tour-city-btn submit-btn" onclick="${submitActions[section]}" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #4CAF50; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);">
-                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-                            <div class="city-info" style="background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center; width: 100%;">
-                                <div class="city-name" style="font-weight: bold; font-size: 18px;">📝 Подать</div>
-                                <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #4CAF50;">${submitLabels[section]}</div>
-                            </div>
+                    <div class="tour-city-btn submit-btn" onclick="${submitActions[section]}" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #4CAF50;">
+                        <img src="/static/images/submit_listing.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
+                            <div class="city-name" style="font-weight: bold; font-size: 18px;">📝 Подать</div>
+                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #4CAF50;">${submitLabels[section]}</div>
                         </div>
                     </div>
                 `;
