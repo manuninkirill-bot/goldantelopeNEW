@@ -1208,14 +1208,54 @@ def admin_moderate():
     save_pending_listings(country, pending)
     
     if action == 'approve':
-        listing['id'] = f"{country}_realestate_{int(time.time())}"
+        # Определяем категорию из объявления
+        category = listing.get('category', 'real_estate')
+        listing['id'] = f"{country}_{category}_{int(time.time())}"
         listing['status'] = 'approved'
+        
+        # Отправляем фото в Telegram канал и получаем URL
+        if listing.get('image_url'):
+            try:
+                import base64
+                image_url = listing['image_url']
+                image_data = None
+                
+                # Если это base64 data URL
+                if image_url.startswith('data:'):
+                    header, b64_data = image_url.split(',', 1)
+                    image_data = base64.b64decode(b64_data)
+                # Если это локальный файл
+                elif image_url.startswith('/static/') or image_url.startswith('static/'):
+                    file_path = image_url.lstrip('/')
+                    if os.path.exists(file_path):
+                        with open(file_path, 'rb') as f:
+                            image_data = f.read()
+                # Если это внешний URL
+                elif image_url.startswith('http'):
+                    try:
+                        resp = requests.get(image_url, timeout=30)
+                        if resp.status_code == 200:
+                            image_data = resp.content
+                    except:
+                        pass
+                
+                if image_data:
+                    # Отправляем в Telegram канал
+                    caption = f"📋 {listing.get('title', 'Объявление')}\n\n{listing.get('description', '')[:500]}"
+                    telegram_url = send_photo_to_channel(image_data, caption)
+                    
+                    if telegram_url:
+                        listing['image_url'] = telegram_url
+                        listing['telegram_photo'] = True
+            except Exception as e:
+                print(f"Error uploading photo to Telegram: {e}")
+        
         data = load_data(country)
-        if 'real_estate' not in data:
-            data['real_estate'] = []
-        data['real_estate'].insert(0, listing)
+        if category not in data:
+            data[category] = []
+        data[category].insert(0, listing)
         save_data(country, data)
-        return jsonify({'success': True, 'message': 'Объявление одобрено'})
+        return jsonify({'success': True, 'message': f'Объявление одобрено и добавлено в {category}'})
     else:
         return jsonify({'success': True, 'message': 'Объявление отклонено'})
 
@@ -1423,6 +1463,315 @@ def bunny_image_proxy(image_path):
     except Exception as e:
         print(f"Error fetching image: {e}")
         return Response('Error fetching image', status=500)
+
+# ============ УПРАВЛЕНИЕ ГОРОДАМИ ============
+
+def load_cities_config(country, category):
+    """Загрузить конфигурацию городов для категории"""
+    cities_file = f'cities_{country}_{category}.json'
+    if os.path.exists(cities_file):
+        with open(cities_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return []
+
+def save_cities_config(country, category, cities):
+    """Сохранить конфигурацию городов"""
+    cities_file = f'cities_{country}_{category}.json'
+    with open(cities_file, 'w', encoding='utf-8') as f:
+        json.dump(cities, f, ensure_ascii=False, indent=2)
+
+@app.route('/api/admin/cities', methods=['GET', 'POST'])
+def get_cities():
+    """Получить города для категории (требует авторизации)"""
+    # Для GET запросов проверяем пароль в параметрах
+    if request.method == 'GET':
+        password = request.args.get('password', '')
+    else:
+        password = request.json.get('password', '')
+    
+    admin_key = os.environ.get('ADMIN_KEY', '29Sept1982!')
+    
+    if password != admin_key:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    country = request.args.get('country', 'vietnam') if request.method == 'GET' else request.json.get('country', 'vietnam')
+    category = request.args.get('category', 'restaurants') if request.method == 'GET' else request.json.get('category', 'restaurants')
+    cities = load_cities_config(country, category)
+    return jsonify({'country': country, 'category': category, 'cities': cities})
+
+@app.route('/api/admin/add-city', methods=['POST'])
+def add_city():
+    """Добавить город"""
+    password = request.form.get('password', '')
+    admin_key = os.environ.get('ADMIN_KEY', '29Sept1982!')
+    
+    if password != admin_key:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    country = request.form.get('country', 'vietnam')
+    category = request.form.get('category', 'restaurants')
+    name = request.form.get('name', '').strip()
+    
+    if not name:
+        return jsonify({'error': 'City name required'}), 400
+    
+    cities = load_cities_config(country, category)
+    
+    # Генерируем ID
+    city_id = f"{country}_{category}_{len(cities)}_{int(time.time())}"
+    
+    # Обработка фото
+    image_path = '/static/icons/placeholder.png'
+    photo = request.files.get('photo')
+    if photo and photo.filename:
+        import base64
+        file_data = photo.read()
+        ext = photo.filename.rsplit('.', 1)[-1].lower() if '.' in photo.filename else 'jpg'
+        
+        # Сохраняем в static/icons/cities/
+        os.makedirs('static/icons/cities', exist_ok=True)
+        filename = f"{city_id}.{ext}"
+        filepath = f"static/icons/cities/{filename}"
+        with open(filepath, 'wb') as f:
+            f.write(file_data)
+        image_path = f"/static/icons/cities/{filename}"
+    
+    new_city = {
+        'id': city_id,
+        'name': name,
+        'image': image_path
+    }
+    
+    cities.append(new_city)
+    save_cities_config(country, category, cities)
+    
+    return jsonify({'success': True, 'message': f'Город "{name}" добавлен'})
+
+@app.route('/api/admin/update-city', methods=['POST'])
+def update_city():
+    """Обновить название города"""
+    password = request.json.get('password', '')
+    admin_key = os.environ.get('ADMIN_KEY', '29Sept1982!')
+    
+    if password != admin_key:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    country = request.json.get('country', 'vietnam')
+    category = request.json.get('category', 'restaurants')
+    city_id = request.json.get('city_id')
+    name = request.json.get('name', '').strip()
+    
+    cities = load_cities_config(country, category)
+    
+    for city in cities:
+        if city.get('id') == city_id:
+            city['name'] = name
+            save_cities_config(country, category, cities)
+            return jsonify({'success': True, 'message': 'Город обновлён'})
+    
+    return jsonify({'error': 'City not found'}), 404
+
+@app.route('/api/admin/update-city-photo', methods=['POST'])
+def update_city_photo():
+    """Обновить фото города"""
+    password = request.form.get('password', '')
+    admin_key = os.environ.get('ADMIN_KEY', '29Sept1982!')
+    
+    if password != admin_key:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    country = request.form.get('country', 'vietnam')
+    category = request.form.get('category', 'restaurants')
+    city_id = request.form.get('city_id')
+    photo = request.files.get('photo')
+    
+    if not photo or not photo.filename:
+        return jsonify({'error': 'Photo required'}), 400
+    
+    cities = load_cities_config(country, category)
+    
+    for city in cities:
+        if city.get('id') == city_id:
+            file_data = photo.read()
+            ext = photo.filename.rsplit('.', 1)[-1].lower() if '.' in photo.filename else 'jpg'
+            
+            os.makedirs('static/icons/cities', exist_ok=True)
+            filename = f"{city_id}.{ext}"
+            filepath = f"static/icons/cities/{filename}"
+            with open(filepath, 'wb') as f:
+                f.write(file_data)
+            
+            city['image'] = f"/static/icons/cities/{filename}"
+            save_cities_config(country, category, cities)
+            return jsonify({'success': True, 'message': 'Фото обновлено'})
+    
+    return jsonify({'error': 'City not found'}), 404
+
+@app.route('/api/admin/delete-city', methods=['POST'])
+def delete_city():
+    """Удалить город"""
+    password = request.json.get('password', '')
+    admin_key = os.environ.get('ADMIN_KEY', '29Sept1982!')
+    
+    if password != admin_key:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    country = request.json.get('country', 'vietnam')
+    category = request.json.get('category', 'restaurants')
+    city_id = request.json.get('city_id')
+    
+    cities = load_cities_config(country, category)
+    
+    for i, city in enumerate(cities):
+        if city.get('id') == city_id:
+            cities.pop(i)
+            save_cities_config(country, category, cities)
+            return jsonify({'success': True, 'message': 'Город удалён'})
+    
+    return jsonify({'error': 'City not found'}), 404
+
+# ============ РУЧНОЙ ПАРСЕР ============
+
+@app.route('/api/admin/manual-parse', methods=['POST'])
+def manual_parse():
+    """Ручной парсинг канала - 100% всех сообщений"""
+    password = request.json.get('password', '')
+    admin_key = os.environ.get('ADMIN_KEY', '29Sept1982!')
+    
+    if password != admin_key:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    country = request.json.get('country', 'vietnam')
+    channel = request.json.get('channel', '').strip().replace('@', '')
+    category = request.json.get('category', 'chat')
+    limit = request.json.get('limit', 0)  # 0 = все сообщения
+    
+    if not channel:
+        return jsonify({'error': 'Channel name required'}), 400
+    
+    try:
+        # Пытаемся использовать Telethon парсер
+        from telethon.sync import TelegramClient
+        
+        api_id = os.environ.get('TELEGRAM_API_ID')
+        api_hash = os.environ.get('TELEGRAM_API_HASH')
+        
+        if not api_id or not api_hash:
+            return jsonify({'error': 'Telegram API credentials not configured'}), 400
+        
+        session_name = 'goldantelope_manual'
+        client = TelegramClient(session_name, int(api_id), api_hash)
+        
+        count = 0
+        log_messages = []
+        
+        with client:
+            entity = client.get_entity(channel)
+            
+            # Если limit=0, загружаем ВСЕ сообщения (iter_messages без limit)
+            if limit == 0 or limit >= 10000:
+                messages = client.iter_messages(entity)
+            else:
+                messages = client.iter_messages(entity, limit=limit)
+            
+            data = load_data(country)
+            if category not in data:
+                data[category] = []
+            
+            existing_ids = set(item.get('telegram_link', '') for item in data[category])
+            
+            for msg in messages:
+                if msg.text:
+                    telegram_link = f"https://t.me/{channel}/{msg.id}"
+                    
+                    # Пропускаем дубликаты
+                    if telegram_link in existing_ids:
+                        continue
+                    
+                    # Создаём объявление
+                    listing_id = f"{country}_{category}_{int(time.time())}_{count}"
+                    
+                    new_listing = {
+                        'id': listing_id,
+                        'title': msg.text[:100] if msg.text else 'Без названия',
+                        'description': msg.text,
+                        'date': msg.date.isoformat() if msg.date else datetime.now().isoformat(),
+                        'telegram_link': telegram_link,
+                        'category': category
+                    }
+                    
+                    # Обработка фото
+                    if msg.photo:
+                        try:
+                            os.makedirs('static/parsed', exist_ok=True)
+                            photo_path = client.download_media(msg.photo, file=f'static/parsed/{listing_id}.jpg')
+                            if photo_path:
+                                new_listing['image_url'] = f'/{photo_path}'
+                        except Exception as photo_err:
+                            log_messages.append(f"[!] Ошибка фото: {photo_err}")
+                    
+                    data[category].insert(0, new_listing)
+                    existing_ids.add(telegram_link)
+                    count += 1
+                    
+                    if count % 50 == 0:
+                        log_messages.append(f"[{count}] Обработано {count} сообщений...")
+            
+            save_data(country, data)
+        
+        return jsonify({
+            'success': True, 
+            'message': f'Парсинг завершён. Добавлено {count} объявлений из канала @{channel}.',
+            'count': count,
+            'log': '\n'.join(log_messages[-30:])
+        })
+        
+    except ImportError:
+        return jsonify({'error': 'Telethon не установлен. Используйте Bot API.'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ============ TELEGRAM КАНАЛ ДЛЯ ФОТО ============
+
+TELEGRAM_PHOTO_CHANNEL = '-1002563977633'
+
+def send_photo_to_channel(image_data, caption=''):
+    """Отправить фото в Telegram канал и получить file_id"""
+    bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
+    if not bot_token:
+        return None
+    
+    try:
+        url = f"https://api.telegram.org/bot{bot_token}/sendPhoto"
+        
+        files = {'photo': ('photo.jpg', image_data, 'image/jpeg')}
+        data = {
+            'chat_id': TELEGRAM_PHOTO_CHANNEL,
+            'caption': caption[:1024] if caption else ''
+        }
+        
+        response = requests.post(url, files=files, data=data, timeout=30)
+        result = response.json()
+        
+        if result.get('ok'):
+            # Получаем file_id и URL фото
+            photo = result['result'].get('photo', [])
+            if photo:
+                largest = max(photo, key=lambda x: x.get('file_size', 0))
+                file_id = largest.get('file_id')
+                
+                # Получаем URL файла
+                file_url = f"https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}"
+                file_response = requests.get(file_url).json()
+                
+                if file_response.get('ok'):
+                    file_path = file_response['result'].get('file_path')
+                    return f"https://api.telegram.org/file/bot{bot_token}/{file_path}"
+        
+        return None
+    except Exception as e:
+        print(f"Error sending photo to channel: {e}")
+        return None
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
