@@ -3274,14 +3274,20 @@
                                                 ${item.price ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">💰 $${item.price}</span>` : ''}
                                                 ${item.city ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">🏙️ ${getCityRu(item.city)}</span>` : ''}
                                             </div>`
-                                            : (category === 'entertainment' 
+                                            : (category === 'transport' || category === 'bike_rentals'
                                                 ? `<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-                                                    ${item.feature ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">⭐ ${item.feature}</span>` : ''}
-                                                    ${item.capacity ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">👥 ${item.capacity}</span>` : ''}
+                                                    ${item.engine ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">🔧 ${item.engine}cc</span>` : ''}
+                                                    ${item.year ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">📅 ${item.year}</span>` : ''}
+                                                    ${item.transport_type ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">🏷️ ${item.transport_type === 'bikes' ? 'Мото' : item.transport_type === 'cars' ? 'Авто' : item.transport_type === 'yachts' ? 'Яхты' : item.transport_type}</span>` : ''}
                                                 </div>`
-                                                : (category === 'real_estate' || category === 'realestate' 
-                                                    ? (item.listing_type === 'rent' ? '<span style="background:#2196F3;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🔑 Аренда</span>' : '<span style="background:#4CAF50;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🏠 Продажа</span>')
-                                                    : '')))
+                                                : (category === 'entertainment' 
+                                                    ? `<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+                                                        ${item.feature ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">⭐ ${item.feature}</span>` : ''}
+                                                        ${item.capacity ? `<span style="font-size:16px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);">👥 ${item.capacity}</span>` : ''}
+                                                    </div>`
+                                                    : (category === 'real_estate' || category === 'realestate' 
+                                                        ? (item.listing_type === 'rent' ? '<span style="background:#2196F3;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🔑 Аренда</span>' : '<span style="background:#4CAF50;color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🏠 Продажа</span>')
+                                                        : ''))))
                                     }
                                     ${category !== 'restaurants' && item.area ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">📐 ${item.area}m²</span>` : ''}
                                     ${category !== 'restaurants' && item.rooms ? `<span style="background:rgba(0,0,0,0.75);color:#fff;padding:5px 10px;border-radius:4px;font-size:13px;font-weight:600;">🛏 ${item.rooms} комн.</span>` : ''}
