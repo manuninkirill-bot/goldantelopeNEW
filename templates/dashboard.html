@@ -1965,32 +1965,103 @@
             </div>
         </div>
 
-        <!-- Новости -->
+        <!-- Фотосессия -->
         <div id="news" class="content">
             <div id="vietnam-news-buttons" style="display: none; padding: 20px;">
-                <div class="tour-grid-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px;">
-                    <div class="tour-city-btn" onclick="loadListings('news', 'Дананг')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #d4af37;">
-                        <img src="/static/icons/cities/danang_photo.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="tour-grid-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px;">
+                    <div class="tour-city-btn news-city-btn" data-city="Дананг" onclick="filterPhotoshootByCity('Дананг')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #d4af37;">
+                        <img src="/static/images/photoshoot/danang.jpg" style="width: 100%; height: 100%; object-fit: cover;">
                         <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
                             <div class="city-name" style="font-weight: bold; font-size: 16px;">Дананг</div>
+                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">0 объявлений</div>
                         </div>
                     </div>
-                    <div class="tour-city-btn" onclick="loadListings('news', 'Нячанг')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #d4af37;">
-                        <img src="/static/icons/cities/nhatrang_photo.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="tour-city-btn news-city-btn" data-city="Нячанг" onclick="filterPhotoshootByCity('Нячанг')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
+                        <img src="/static/images/photoshoot/nhatrang.jpg" style="width: 100%; height: 100%; object-fit: cover;">
                         <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
                             <div class="city-name" style="font-weight: bold; font-size: 16px;">Нячанг</div>
+                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">0 объявлений</div>
                         </div>
                     </div>
-                    <div class="tour-city-btn" onclick="loadListings('news', 'Фукуок')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #d4af37;">
-                        <img src="/static/icons/cities/phuquoc_photo.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="tour-city-btn news-city-btn" data-city="Фукуок" onclick="filterPhotoshootByCity('Фукуок')" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid transparent;">
+                        <img src="/static/images/photoshoot/phuquoc.jpg" style="width: 100%; height: 100%; object-fit: cover;">
                         <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
                             <div class="city-name" style="font-weight: bold; font-size: 16px;">Фукуок</div>
+                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #666;">0 объявлений</div>
+                        </div>
+                    </div>
+                    <div class="tour-city-btn submit-btn" onclick="switchTab('submit-photoshoot'); loadPhotoshootCaptcha();" style="cursor: pointer; position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #4CAF50;">
+                        <img src="/static/images/submit_listing.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="city-info" style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); color: #333; padding: 12px; text-align: center;">
+                            <div class="city-name" style="font-weight: bold; font-size: 18px;">📝 Подать</div>
+                            <div class="tour-count" style="font-size: 13px; margin-top: 4px; color: #4CAF50;">Добавить фотосессию</div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="listing-grid" id="news-grid">
                 <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>
+
+        <!-- Форма подачи фотосессии -->
+        <div id="submit-photoshoot" class="content" style="display: none;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h2 style="margin: 0 0 20px 0; color: #333; text-align: center;">📸 Добавить фотосессию</h2>
+                <form onsubmit="submitPhotoshoot(event)">
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📍 Город *</label>
+                        <select id="photoshoot-city" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                            <option value="Дананг">Дананг</option>
+                            <option value="Нячанг">Нячанг</option>
+                            <option value="Фукуок">Фукуок</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📝 Название *</label>
+                        <input type="text" id="photoshoot-title" required placeholder="Фотограф в Нячанге, свадебная съёмка" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📄 Описание *</label>
+                        <textarea id="photoshoot-description" required rows="4" placeholder="Опишите услуги, стиль съёмки, цены..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; resize: vertical; box-sizing: border-box;"></textarea>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">💰 Цена (VND)</label>
+                        <input type="number" id="photoshoot-price" placeholder="3000000" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📱 Telegram *</label>
+                        <input type="text" id="photoshoot-telegram" required placeholder="@username или t.me/..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">📷 Примеры работ (до 4 шт, макс 1 МБ каждое)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <input type="file" id="photoshoot-photo-0" accept="image/*" style="font-size: 12px;">
+                            <input type="file" id="photoshoot-photo-1" accept="image/*" style="font-size: 12px;">
+                            <input type="file" id="photoshoot-photo-2" accept="image/*" style="font-size: 12px;">
+                            <input type="file" id="photoshoot-photo-3" accept="image/*" style="font-size: 12px;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px; padding: 15px; background: #f5f5f5; border-radius: 6px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">🤖 Капча *</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span id="photoshoot-captcha-question" style="font-size: 18px; font-weight: bold; color: #333;">Загрузка...</span>
+                            <input type="text" id="photoshoot-captcha" required placeholder="Ответ" style="width: 100px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; text-align: center;">
+                            <button type="button" onclick="loadPhotoshootCaptcha()" style="padding: 10px; background: #eee; border: none; border-radius: 6px; cursor: pointer;">🔄</button>
+                        </div>
+                        <input type="hidden" id="photoshoot-captcha-answer">
+                    </div>
+
+                    <div id="photoshoot-submit-status" style="margin-bottom: 15px; font-size: 14px; display: none;"></div>
+
+                    <button type="submit" style="width: 100%; padding: 15px; background: #E91E63; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 16px;">📤 Отправить на модерацию</button>
+                </form>
             </div>
         </div>
 
@@ -5577,6 +5648,81 @@
                     document.getElementById('visas-captcha-question').textContent = data.question;
                     document.getElementById('visas-captcha-answer').value = data.token;
                 });
+        }
+
+        function loadPhotoshootCaptcha() {
+            fetch('/api/captcha')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('photoshoot-captcha-question').textContent = data.question;
+                    document.getElementById('photoshoot-captcha-answer').value = data.token;
+                });
+        }
+
+        async function submitPhotoshoot(e) {
+            e.preventDefault();
+            const status = document.getElementById('photoshoot-submit-status');
+            status.style.display = 'block';
+            status.textContent = '⏳ Отправка...';
+            status.style.color = '#666';
+
+            const formData = new FormData();
+            formData.append('country', 'vietnam');
+            formData.append('category', 'news');
+            formData.append('city', document.getElementById('photoshoot-city').value);
+            formData.append('title', document.getElementById('photoshoot-title').value);
+            formData.append('description', document.getElementById('photoshoot-description').value);
+            formData.append('price', document.getElementById('photoshoot-price').value || '');
+            formData.append('telegram', document.getElementById('photoshoot-telegram').value);
+            formData.append('captcha_answer', document.getElementById('photoshoot-captcha').value);
+            formData.append('captcha_token', document.getElementById('photoshoot-captcha-answer').value);
+
+            for (let i = 0; i < 4; i++) {
+                const file = document.getElementById(`photoshoot-photo-${i}`).files[0];
+                if (file) {
+                    if (file.size > 1024 * 1024) {
+                        status.textContent = '❌ Фото слишком большое (макс 1 МБ)';
+                        status.style.color = '#ff6b6b';
+                        return;
+                    }
+                    formData.append('photos', file);
+                }
+            }
+
+            try {
+                const response = await fetch('/api/submit-listing', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    status.textContent = '✅ ' + data.message;
+                    status.style.color = '#4CAF50';
+                    e.target.reset();
+                    loadPhotoshootCaptcha();
+                } else {
+                    status.textContent = '❌ ' + (data.error || 'Ошибка');
+                    status.style.color = '#ff6b6b';
+                    loadPhotoshootCaptcha();
+                }
+            } catch (err) {
+                status.textContent = '❌ Ошибка отправки';
+                status.style.color = '#ff6b6b';
+            }
+        }
+
+        function filterPhotoshootByCity(city) {
+            // Highlight selected city
+            document.querySelectorAll('.news-city-btn').forEach(btn => {
+                btn.style.border = '3px solid transparent';
+            });
+            const selectedBtn = document.querySelector(`.news-city-btn[data-city="${city}"]`);
+            if (selectedBtn) {
+                selectedBtn.style.border = '3px solid #d4af37';
+            }
+            // Load listings filtered by city
+            loadListings('news', city);
         }
 
         async function submitVisas(e) {
