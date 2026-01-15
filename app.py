@@ -1723,13 +1723,29 @@ def manual_parse():
                         'category': category
                     }
                     
-                    # Обработка фото
+                    # Обработка фото - пересылаем в наш Telegram канал
                     if msg.photo:
                         try:
-                            os.makedirs('static/parsed', exist_ok=True)
-                            photo_path = client.download_media(msg.photo, file=f'static/parsed/{listing_id}.jpg')
-                            if photo_path:
-                                new_listing['image_url'] = f'/{photo_path}'
+                            # Скачиваем фото во временный буфер
+                            import io
+                            photo_buffer = io.BytesIO()
+                            client.download_media(msg.photo, file=photo_buffer)
+                            photo_buffer.seek(0)
+                            image_data = photo_buffer.read()
+                            
+                            if image_data:
+                                # Отправляем в Telegram канал с полным текстом
+                                caption = f"📋 {new_listing['title']}\n\n{msg.text[:900] if msg.text else ''}"
+                                file_id = send_photo_to_channel(image_data, caption)
+                                
+                                if file_id:
+                                    new_listing['telegram_file_id'] = file_id
+                                    new_listing['telegram_photo'] = True
+                                    # Получаем актуальный URL
+                                    fresh_url = get_telegram_photo_url(file_id)
+                                    if fresh_url:
+                                        new_listing['image_url'] = fresh_url
+                                    log_messages.append(f"[✓] Фото #{count+1} загружено в Telegram канал")
                         except Exception as photo_err:
                             log_messages.append(f"[!] Ошибка фото: {photo_err}")
                     
