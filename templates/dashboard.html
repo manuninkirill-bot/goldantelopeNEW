@@ -2934,6 +2934,63 @@
             dots[activeIdx].classList.add('active');
         }
 
+        const categoryCityConfigs = {
+            'restaurants': {
+                'vietnam': ['Нячанг', 'Дананг', 'Хошимин', 'Ханой', 'Фукуок', 'Фантьет', 'Муйне', 'Камрань', 'Далат', 'Хойан'],
+                'thailand': ['Пхукет', 'Паттайя', 'Бангкок', 'Самуи', 'Панган', 'Чиангмай']
+            },
+            'tours': {
+                'vietnam': ['Нячанг', 'Дананг', 'Хошимин', 'Ханой', 'Фукуок', 'Фантьет', 'Муйне', 'Камрань', 'Далат', 'Хойан'],
+                'thailand': ['Пхукет', 'Паттайя', 'Бангкок', 'Самуи', 'Панган', 'Чиангмай']
+            },
+            'entertainment': {
+                'vietnam': ['Нячанг', 'Дананг', 'Хошимин', 'Ханой', 'Фукуок', 'Фантьет', 'Муйне', 'Камрань', 'Далат', 'Хойан'],
+                'thailand': ['Пхукет', 'Паттайя', 'Бангкок', 'Самуи', 'Панган', 'Чиангмай']
+            },
+            'visas': {
+                'vietnam': ['Лаос', 'Камбоджа', 'Таиланд'],
+                'thailand': []
+            },
+            'photoshoot': {
+                'vietnam': ['Нячанг', 'Дананг', 'Фукуок', 'Хошимин'],
+                'thailand': []
+            }
+        };
+
+        function updateCityFilters(category, country) {
+            const container = document.getElementById('city-filters-container');
+            const gridContainer = document.getElementById('tour-grid-container');
+            
+            if (!container || !gridContainer) return;
+            
+            const config = categoryCityConfigs[category];
+            if (!config || !config[country] || config[country].length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'block';
+            gridContainer.innerHTML = '';
+
+            // Add "All" button
+            const allBtn = createCityButton('Все', '', category, country);
+            gridContainer.appendChild(allBtn);
+
+            config[country].forEach(city => {
+                const btn = createCityButton(city, city, category, country);
+                gridContainer.appendChild(btn);
+            });
+        }
+
+        function createCityButton(name, value, category, country) {
+            const btn = document.createElement('div');
+            btn.className = 'tour-city-btn';
+            btn.style.cursor = 'pointer';
+            btn.onclick = () => loadListings(category, value);
+            btn.innerHTML = `<div class="city-info"><div class="city-name">${name}</div></div>`;
+            return btn;
+        }
+
         function loadListings(category, city = '') {
             if (!category) {
                 // Determine category from active tab or current context
