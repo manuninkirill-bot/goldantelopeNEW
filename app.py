@@ -887,8 +887,14 @@ ADMIN_PASSWORDS = {
     'indonesia': 'XX111111!'
 }
 
+SUPER_ADMIN_PASSWORD = '29Sept1982!'
+
 def check_admin_password(password, country=None):
     """Check if password is valid for the given country or any country"""
+    # Супер-админ имеет доступ ко всем странам
+    if password == SUPER_ADMIN_PASSWORD:
+        return True, 'all'
+    
     if country and country in ADMIN_PASSWORDS:
         return password == ADMIN_PASSWORDS[country], country
     for c, pwd in ADMIN_PASSWORDS.items():

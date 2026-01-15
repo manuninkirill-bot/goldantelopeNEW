@@ -2907,8 +2907,8 @@
         }, 10000);
 
         function switchCountry(country) {
-            // Если админ авторизован, он может работать только со своей страной
-            if (adminAuthenticated && adminCountry && country !== adminCountry) {
+            // Если админ авторизован, он может работать только со своей страной (кроме супер-админа)
+            if (adminAuthenticated && adminCountry && adminCountry !== 'all' && country !== adminCountry) {
                 const countryNames = {
                     'vietnam': '🇻🇳 Вьетнам',
                     'thailand': '🇹🇭 Таиланд',
@@ -5740,14 +5740,14 @@
                         'indonesia': '🇮🇩 Индонезия'
                     };
                     
-                    adminStatus.textContent = '✅ Авторизован: ' + countryNames[adminCountry];
+                    adminStatus.textContent = adminCountry === 'all' ? '✅ Супер-админ (все страны)' : '✅ Авторизован: ' + countryNames[adminCountry];
                     adminStatus.style.color = '#31a24c';
                     adminTools.style.display = 'block';
                     adminPassword.disabled = true;
                     document.querySelector('button[onclick="adminAuth()"]').disabled = true;
                     
-                    // Переключаем на страну админа
-                    if (adminCountry && currentCountry !== adminCountry) {
+                    // Переключаем на страну админа (кроме супер-админа)
+                    if (adminCountry && adminCountry !== 'all' && currentCountry !== adminCountry) {
                         switchCountry(adminCountry);
                     }
                     
