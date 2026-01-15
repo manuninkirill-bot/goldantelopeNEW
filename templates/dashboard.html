@@ -1717,41 +1717,39 @@
                     <p style="margin: 0; opacity: 0.9; font-size: 13px;">Общайтесь с русскоязычным сообществом Азии. Авторизация через Telegram.</p>
                 </div>
                 
-                <!-- Форма авторизации -->
-                <div id="chat-auth-form" style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; border: 1px solid #ddd;">
-                    <div style="text-align: center; margin-bottom: 15px;">
-                        <div style="font-size: 40px; margin-bottom: 10px;">🔐</div>
-                        <h4 style="margin: 0 0 5px 0; color: #333;">Вход в чат</h4>
-                        <p style="margin: 0; color: #666; font-size: 13px;">Введите ваш @username из Telegram</p>
-                    </div>
-                    <div style="max-width: 350px; margin: 0 auto;">
-                        <div style="margin-bottom: 12px;">
-                            <input type="text" id="chat-telegram-id" placeholder="@ваш_ник" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
-                            <div style="font-size: 11px; color: #888; margin-top: 5px;">Сначала напишите боту @goldantelope_bot команду /start</div>
+                <!-- Окно чата (всегда видно) -->
+                <div style="background: white; border-radius: 12px; border: 1px solid #ddd; overflow: hidden;">
+                    <div style="background: #f8f9fa; padding: 12px 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                        <div id="chat-user-info">
+                            <span style="color: #999; font-size: 13px;">Читайте сообщения. Для отправки войдите через Telegram.</span>
                         </div>
-                        <button onclick="requestChatCode()" style="width: 100%; padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">📩 Получить код</button>
-                        <div id="chat-code-form" style="display: none; margin-top: 15px;">
-                            <input type="text" id="chat-verify-code" placeholder="Введите 6-значный код" style="width: 100%; padding: 12px; border: 2px solid #667eea; border-radius: 8px; font-size: 16px; text-align: center; letter-spacing: 3px; box-sizing: border-box; margin-bottom: 10px;">
-                            <button onclick="verifyChatCode()" style="width: 100%; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">✅ Войти</button>
+                        <div id="chat-logout-btn" style="display: none;">
+                            <span style="color: #333; font-weight: 600;">👤 </span>
+                            <span id="chat-username" style="color: #667eea; font-weight: 600;"></span>
+                            <button onclick="logoutChat()" style="padding: 4px 10px; background: #dc3545; color: white; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; margin-left: 10px;">Выйти</button>
                         </div>
-                        <div id="chat-auth-status" style="margin-top: 10px; text-align: center; font-size: 13px;"></div>
                     </div>
-                </div>
-                
-                <!-- Интерфейс чата (скрыт до авторизации) -->
-                <div id="chat-interface" style="display: none;">
-                    <div style="background: white; border-radius: 12px; border: 1px solid #ddd; overflow: hidden;">
-                        <div style="background: #f8f9fa; padding: 12px 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <span style="color: #333; font-weight: 600;">👤 </span>
-                                <span id="chat-username" style="color: #667eea; font-weight: 600;"></span>
+                    <div id="chat-messages" style="height: 500px; overflow-y: auto; padding: 15px; background: #fafafa;">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                    
+                    <!-- Форма авторизации (для неавторизованных) -->
+                    <div id="chat-auth-form" style="padding: 15px; border-top: 1px solid #eee; background: #f0f4ff;">
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="text" id="chat-telegram-id" placeholder="@ваш_ник" style="flex: 1; min-width: 150px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px;">
+                            <button onclick="requestChatCode()" style="padding: 10px 16px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">📩 Получить код</button>
+                            <div id="chat-code-form" style="display: none; gap: 10px; align-items: center;">
+                                <input type="text" id="chat-verify-code" placeholder="Код" style="width: 100px; padding: 10px; border: 2px solid #667eea; border-radius: 8px; font-size: 14px; text-align: center;">
+                                <button onclick="verifyChatCode()" style="padding: 10px 16px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">✅ Войти</button>
                             </div>
-                            <button onclick="logoutChat()" style="padding: 6px 12px; background: #dc3545; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">Выйти</button>
                         </div>
-                        <div id="chat-messages" style="height: 500px; overflow-y: auto; padding: 15px; background: #fafafa;">
-                            <div class="loading"><div class="spinner"></div></div>
-                        </div>
-                        <div style="padding: 12px; border-top: 1px solid #eee; background: white; display: flex; gap: 10px;">
+                        <div id="chat-auth-status" style="margin-top: 8px; font-size: 12px;"></div>
+                        <div style="font-size: 11px; color: #888; margin-top: 5px;">Сначала напишите боту @goldantelope_bot команду /start</div>
+                    </div>
+                    
+                    <!-- Форма отправки (для авторизованных) -->
+                    <div id="chat-send-form" style="display: none; padding: 12px; border-top: 1px solid #eee; background: white;">
+                        <div style="display: flex; gap: 10px;">
                             <input type="text" id="chat-message-input" placeholder="Введите сообщение..." style="flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px;" onkeypress="if(event.key==='Enter')sendChatMessage()">
                             <button onclick="sendChatMessage()" style="padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">📤 Отправить</button>
                         </div>
@@ -2803,22 +2801,36 @@
         let chatUsername = localStorage.getItem('chat_username');
         
         function loadChatFeed() {
-            if (chatToken && chatUsername) {
-                document.getElementById('chat-auth-form').style.display = 'none';
-                document.getElementById('chat-interface').style.display = 'block';
-                document.getElementById('chat-username').textContent = chatUsername;
-                loadChatMessages();
-            } else {
-                document.getElementById('chat-auth-form').style.display = 'block';
-                document.getElementById('chat-interface').style.display = 'none';
-            }
+            loadChatMessages();
+            updateChatUI();
             
             if (!window.chatRefreshInterval) {
                 window.chatRefreshInterval = setInterval(() => {
-                    if (document.getElementById('chat').classList.contains('active') && chatToken) {
+                    if (document.getElementById('chat').classList.contains('active')) {
                         loadChatMessages();
                     }
                 }, 5000);
+            }
+        }
+        
+        function updateChatUI() {
+            const authForm = document.getElementById('chat-auth-form');
+            const sendForm = document.getElementById('chat-send-form');
+            const userInfo = document.getElementById('chat-user-info');
+            const logoutBtn = document.getElementById('chat-logout-btn');
+            const usernameSpan = document.getElementById('chat-username');
+            
+            if (chatToken && chatUsername) {
+                if (authForm) authForm.style.display = 'none';
+                if (sendForm) sendForm.style.display = 'block';
+                if (userInfo) userInfo.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'block';
+                if (usernameSpan) usernameSpan.textContent = '@' + chatUsername;
+            } else {
+                if (authForm) authForm.style.display = 'block';
+                if (sendForm) sendForm.style.display = 'none';
+                if (userInfo) userInfo.style.display = 'block';
+                if (logoutBtn) logoutBtn.style.display = 'none';
             }
         }
         
@@ -2839,7 +2851,7 @@
                 const data = await r.json();
                 if (data.success) {
                     status.innerHTML = '<span style="color: #4CAF50;">Код отправлен! Проверьте Telegram</span>';
-                    document.getElementById('chat-code-form').style.display = 'block';
+                    document.getElementById('chat-code-form').style.display = 'flex';
                 } else {
                     status.innerHTML = `<span style="color: #dc3545;">${data.error}</span>`;
                 }
